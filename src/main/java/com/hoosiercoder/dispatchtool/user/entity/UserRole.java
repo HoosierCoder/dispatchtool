@@ -1,8 +1,5 @@
 package com.hoosiercoder.dispatchtool.user.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
 import java.util.Arrays;
 import java.util.List;
 
