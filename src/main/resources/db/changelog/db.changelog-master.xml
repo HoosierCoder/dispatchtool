@@ -12,4 +12,16 @@
         <sqlFile path="scripts/drop_create_user.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="3" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/add_created_modified_fields_user.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="4" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/update_user_column_names.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="5" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/update_user_add_is_active_column.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

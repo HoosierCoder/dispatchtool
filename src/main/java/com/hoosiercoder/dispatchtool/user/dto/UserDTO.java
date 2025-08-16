@@ -1,51 +1,36 @@
-package com.hoosiercoder.dispatchtool.user.entity;
+package com.hoosiercoder.dispatchtool.user.dto;
 
-import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.Instant;
+import com.hoosiercoder.dispatchtool.user.entity.UserRole;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * Author: HoosierCoder
  */
-@Entity
-public class User {
-    @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+public class UserDTO {
+
     private Long userId;
 
-    @NotNull
-    @Column(nullable = false)
+    @NotBlank(message = "Firstname cannot be empty")
+    @Size(min = 2, max = 20, message = "Firstname must be between 2 and 20 characters")
     private String firstName;
-    @NotNull
-    @Column(nullable = false)
+
+    @NotBlank(message = "Lastname cannot be empty")
+    @Size(min = 2, max = 20, message = "Lastname must be between 2 and 20 characters")
     private String lastName;
 
-    @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @CreationTimestamp
-    @Column(name = "created_date")
-    private Instant createdDate;
-
-    @UpdateTimestamp
-    @Column(name = "modified_date")
-    private Instant modifiedDate;
-
-    @ColumnDefault("true")
     private boolean isActive;
 
-    public User(String firstName, String lastName, UserRole userRole, boolean isActive) {
+    public UserDTO(String firstName, String lastName, UserRole userRole, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userRole = userRole;
+        this.isActive = isActive;
     }
 
-    public User() {
-
+    public UserDTO() {
     }
 
     public Long getUserId() {
@@ -90,13 +75,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDTO{" +
                 "userId=" + userId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", userRole=" + userRole.getRole() +
-                ", createdDate=" + createdDate +
-                ", modifiedDate=" + modifiedDate +
+                ", userRole=" + userRole +
                 '}';
     }
 }
