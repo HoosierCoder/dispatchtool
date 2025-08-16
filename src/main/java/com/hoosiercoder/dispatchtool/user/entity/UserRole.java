@@ -1,7 +1,7 @@
 package com.hoosiercoder.dispatchtool.user.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author: HoosierCoder
@@ -21,4 +21,13 @@ public enum UserRole {
     public String getRole() {
         return role;
     }
+
+    public static List<String> getRoleNames() {
+        String[] names = {"ASSOCIATE"
+                        ,"LEAD"
+                        ,"MANAGER"
+                        ,"ADMIN"};
+        return Arrays.asList(names);
+    }
+
 }

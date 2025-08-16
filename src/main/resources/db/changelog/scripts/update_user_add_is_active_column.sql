@@ -1,0 +1,3 @@
+
+ALTER TABLE user
+ADD COLUMN is_active BOOLEAN DEFAULT 0;
