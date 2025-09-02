@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS ticket_counter;
+
+CREATE TABLE ticket_counter (
+    counter_id BIGINT NOT NULL DEFAULT 1 PRIMARY KEY,
+
+    counter BIGINT NOT NULL
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
