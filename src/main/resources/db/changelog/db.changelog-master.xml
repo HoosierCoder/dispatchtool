@@ -24,4 +24,16 @@
         <sqlFile path="scripts/update_user_add_is_active_column.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="6" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/create_ticket_counter.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="7" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/insert_initial_ticket_counter_value.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="8" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/create_ticket_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
