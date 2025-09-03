@@ -1,4 +1,4 @@
-package com.hoosiercoder.dispatchtool.counter.entity.repository;
+package com.hoosiercoder.dispatchtool.counter.repository;
 
 import com.hoosiercoder.dispatchtool.counter.entity.TicketCounter;
 import org.springframework.data.jpa.repository.JpaRepository;

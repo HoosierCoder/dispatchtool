@@ -1,7 +1,7 @@
 package com.hoosiercoder.dispatchtool.config;
 
 import com.hoosiercoder.dispatchtool.counter.entity.TicketCounter;
-import com.hoosiercoder.dispatchtool.counter.entity.repository.TicketCounterRepository;
+import com.hoosiercoder.dispatchtool.counter.repository.TicketCounterRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
