@@ -22,7 +22,7 @@ public class ConfigCache {
 
     @PostConstruct
     public void initialization() {
-        TicketCounter ticketCounter = ticketCounterRepository.findByCounterId(1L);
+        TicketCounter ticketCounter = ticketCounterRepository.findByCounterId(Long.valueOf(1));
         currentTicketNumber = new AtomicLong(ticketCounter.getCounter());
     }
 
