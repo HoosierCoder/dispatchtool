@@ -1,0 +1,3 @@
+
+ALTER TABLE ticket
+ADD COLUMN is_closed BOOLEAN DEFAULT 0;
