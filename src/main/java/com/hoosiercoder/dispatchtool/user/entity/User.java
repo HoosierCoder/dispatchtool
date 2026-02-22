@@ -28,6 +28,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Column(name = "hashed_password", length = 60, nullable = true)
+    private String hashedPassword;
+
+    @Column(name = "username", length = 30, unique = true, nullable = false)
+    private String username;
+
     @CreationTimestamp
     @Column(name = "created_date")
     private Instant createdDate;
@@ -79,6 +85,22 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public void setHashedPassword(String hashedPassword) {
+        this.hashedPassword = hashedPassword;
     }
 
     public boolean isActive() {

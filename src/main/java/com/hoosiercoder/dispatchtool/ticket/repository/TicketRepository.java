@@ -8,13 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface TicketRepository  extends JpaRepository<Ticket, String> {
-    public List<Ticket> findByIsDispatchedTrue();
-
-    public List<Ticket> findByIsDispatchedFalse();
-
-    public List<Ticket> findByIsClosedTrue();
-
-    public List<Ticket> findByIsClosedFalse();
 
     public List<Ticket> findByUser(User user);
 

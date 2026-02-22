@@ -11,13 +11,13 @@ public interface TicketService {
 
     public List<TicketDTO> listTickets();
 
-    public List<TicketDTO> listDispatchedTickets();
+    //public List<TicketDTO> listDispatchedTickets();
 
-    public List<TicketDTO> listClosedTickets();
+    //public List<TicketDTO> listClosedTickets();
 
-    public List<TicketDTO> listOpenTickets();
+    //public List<TicketDTO> listOpenTickets();
 
-    public List<TicketDTO> findDispatchedTicketsByDate(Date date);
+    //public List<TicketDTO> findDispatchedTicketsByDate(Date date);
 
     public List<TicketDTO> findByUser(Long userId);
 

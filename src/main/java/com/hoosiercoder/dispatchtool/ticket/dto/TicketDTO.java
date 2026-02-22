@@ -1,5 +1,6 @@
 package com.hoosiercoder.dispatchtool.ticket.dto;
 
+import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -20,9 +21,9 @@ public class TicketDTO {
     @Size(min = 5, max = 500, message = "Description must be between 5 and 500 characters")
     private String description;
 
-    private boolean isDispatched;
-
     private Long userId;
+
+    private TicketStatus status;
 
     private Date dateDispatched;
 
@@ -30,11 +31,10 @@ public class TicketDTO {
         this.ticketId = ticketId;
         this.summary = summary;
         this.description = description;
-        this.isDispatched = false;
     }
 
     public TicketDTO() {
-        this.setDispatched(false);
+        this.status = TicketStatus.UNASSIGNED;
     }
 
     public TicketDTO(String ticketId, String summary, String description, Long userId) {
@@ -42,7 +42,7 @@ public class TicketDTO {
         this.summary = summary;
         this.description = description;
         this.userId = userId;
-        this.isDispatched = false;
+        this.status = TicketStatus.ASSIGNED;
     }
 
     public String getTicketId() {
@@ -69,12 +69,10 @@ public class TicketDTO {
         this.description = description;
     }
 
-    public boolean isDispatched() {
-        return isDispatched;
-    }
+    public TicketStatus getStatus() {return this.status;}
 
-    public void setDispatched(boolean dispatched) {
-        isDispatched = dispatched;
+    public void setStatus(TicketStatus status) {
+        this.status = status;
     }
 
     public Long getUserId() {

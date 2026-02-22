@@ -39,4 +39,17 @@
     <changeSet id="9" author="HoosierCoder" failOnError="true">
         <sqlFile path="scripts/update_ticket_add_is_closed_column.sql" relativeToChangelogFile="true"/>
     </changeSet>
+
+    <changeSet id="10" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/update_user_add_hashed_password.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="11" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/add_ticket_status_column.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="12" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/remove_isclosed_isdispatched_from_ticket.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

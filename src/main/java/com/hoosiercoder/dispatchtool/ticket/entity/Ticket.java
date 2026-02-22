@@ -1,5 +1,6 @@
 package com.hoosiercoder.dispatchtool.ticket.entity;
 
+import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.user.entity.User;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -23,10 +24,6 @@ public class Ticket {
 
     private String description;
 
-    private boolean isDispatched;
-
-    private boolean isClosed;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -41,26 +38,26 @@ public class Ticket {
     @Column(name = "modified_date")
     private Instant modifiedDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketStatus status = TicketStatus.UNASSIGNED;
+
     public Ticket(String ticketId, String summary, String description) {
         this.ticketId = ticketId;
         this.summary = summary;
         this.description = description;
-        this.isDispatched = false;
-        this.isClosed = false;
+        this.status = TicketStatus.UNASSIGNED;
     }
 
     public Ticket() {
-        this.isDispatched = false;
-        this.isClosed = false;
     }
 
     public Ticket(String ticketId, String summary, String description, User user) {
         this.ticketId = ticketId;
         this.summary = summary;
         this.description = description;
-        this.isDispatched = false;
-        this.isClosed = false;
         this.user = user;
+        this.status = TicketStatus.ASSIGNED;
     }
 
     public String getTicketId() {
@@ -85,14 +82,6 @@ public class Ticket {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isDispatched() {
-        return isDispatched;
-    }
-
-    public void setDispatched(boolean dispatched) {
-        isDispatched = dispatched;
     }
 
     public User getUser() {
@@ -127,11 +116,12 @@ public class Ticket {
         this.modifiedDate = modifiedDate;
     }
 
-    public boolean isClosed() {
-        return isClosed;
+    public TicketStatus getStatus() {
+        return status;
     }
 
-    public void setClosed(boolean closed) {
-        isClosed = closed;
+    public void setStatus(TicketStatus status) {
+        this.status = status;
     }
+
 }

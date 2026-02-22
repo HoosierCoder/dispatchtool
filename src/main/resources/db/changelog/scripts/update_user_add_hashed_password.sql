@@ -1,0 +1,4 @@
+
+ALTER TABLE user
+ADD COLUMN hashed_password VARCHAR(60),
+ADD COLUMN username VARCHAR(30);

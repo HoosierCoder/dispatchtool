@@ -63,7 +63,7 @@ public class TicketServiceImpl implements TicketService{
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /*@Override
     public List<TicketDTO> listDispatchedTickets() {
         return ticketRepository.findByIsDispatchedTrue().stream()
                 .map(ticketMapper::ticketToTicketDto)
@@ -75,21 +75,21 @@ public class TicketServiceImpl implements TicketService{
         return ticketRepository.findByIsClosedTrue().stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    @Override
+    /*@Override
     public List<TicketDTO> listOpenTickets() {
         return ticketRepository.findByIsClosedFalse().stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    @Override
+    /*@Override
     public List<TicketDTO> findDispatchedTicketsByDate(Date date) {
         return ticketRepository.findByDateDispatched(date).stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     @Override
     public List<TicketDTO> findByUser(Long userId) {
