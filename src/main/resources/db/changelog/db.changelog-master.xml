@@ -52,4 +52,12 @@
         <sqlFile path="scripts/remove_isclosed_isdispatched_from_ticket.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="13" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/create_location_update_ticket_tables.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="14" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/create_customer_update_ticket.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

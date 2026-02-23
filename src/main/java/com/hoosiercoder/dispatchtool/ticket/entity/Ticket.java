@@ -1,5 +1,7 @@
 package com.hoosiercoder.dispatchtool.ticket.entity;
 
+import com.hoosiercoder.dispatchtool.customer.Customer;
+import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.user.entity.User;
 import jakarta.persistence.*;
@@ -42,6 +44,14 @@ public class Ticket {
     @Column(nullable = false)
     private TicketStatus status = TicketStatus.UNASSIGNED;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     public Ticket(String ticketId, String summary, String description) {
         this.ticketId = ticketId;
         this.summary = summary;
@@ -52,12 +62,13 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(String ticketId, String summary, String description, User user) {
+    public Ticket(String ticketId, String summary, String description, User user, Location location) {
         this.ticketId = ticketId;
         this.summary = summary;
         this.description = description;
         this.user = user;
-        this.status = TicketStatus.ASSIGNED;
+        this.location = location;
+        this.status = (user != null) ? TicketStatus.ASSIGNED : TicketStatus.UNASSIGNED;
     }
 
     public String getTicketId() {
@@ -124,4 +135,7 @@ public class Ticket {
         this.status = status;
     }
 
+    public Location getLocation() { return location; }
+
+    public void setLocation(Location location) { this.location = location; }
 }
