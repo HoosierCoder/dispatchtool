@@ -1,4 +1,4 @@
-package com.hoosiercoder.dispatchtool.customer;
+package com.hoosiercoder.dispatchtool.customer.entity;
 
 import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.ticket.entity.Ticket;

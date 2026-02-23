@@ -1,5 +1,7 @@
 package com.hoosiercoder.dispatchtool.ticket.dto;
 
+import com.hoosiercoder.dispatchtool.customer.dto.CustomerDTO;
+import com.hoosiercoder.dispatchtool.location.dto.LocationDTO;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -26,6 +28,9 @@ public class TicketDTO {
     private TicketStatus status;
 
     private Date dateDispatched;
+
+    private CustomerDTO customer;
+    private LocationDTO location;
 
     public TicketDTO(String ticketId, String summary, String description) {
         this.ticketId = ticketId;
@@ -89,5 +94,21 @@ public class TicketDTO {
 
     public void setDateDispatched(Date dateDispatched) {
         this.dateDispatched = dateDispatched;
+    }
+
+    public CustomerDTO getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerDTO customer) {
+        this.customer = customer;
+    }
+
+    public LocationDTO getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationDTO location) {
+        this.location = location;
     }
 }

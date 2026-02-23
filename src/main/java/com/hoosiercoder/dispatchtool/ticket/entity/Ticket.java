@@ -1,6 +1,6 @@
 package com.hoosiercoder.dispatchtool.ticket.entity;
 
-import com.hoosiercoder.dispatchtool.customer.Customer;
+import com.hoosiercoder.dispatchtool.customer.entity.Customer;
 import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.user.entity.User;
@@ -62,12 +62,14 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(String ticketId, String summary, String description, User user, Location location) {
+    public Ticket(String ticketId, String summary, String description, User user,
+                  Location location, Customer customer) {
         this.ticketId = ticketId;
         this.summary = summary;
         this.description = description;
         this.user = user;
         this.location = location;
+        this.customer = customer;
         this.status = (user != null) ? TicketStatus.ASSIGNED : TicketStatus.UNASSIGNED;
     }
 
@@ -138,4 +140,12 @@ public class Ticket {
     public Location getLocation() { return location; }
 
     public void setLocation(Location location) { this.location = location; }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 }

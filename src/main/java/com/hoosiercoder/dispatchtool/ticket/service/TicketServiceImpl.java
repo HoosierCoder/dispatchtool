@@ -1,6 +1,8 @@
 package com.hoosiercoder.dispatchtool.ticket.service;
 
 import com.hoosiercoder.dispatchtool.config.ConfigCache;
+import com.hoosiercoder.dispatchtool.customer.repository.CustomerRepository;
+import com.hoosiercoder.dispatchtool.location.repository.LocationRepository;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
 import com.hoosiercoder.dispatchtool.ticket.entity.Ticket;
 import com.hoosiercoder.dispatchtool.ticket.mapper.TicketMapper;
@@ -25,16 +27,21 @@ public class TicketServiceImpl implements TicketService{
     private TicketRepository ticketRepository;
     private TicketMapper ticketMapper;
     private UserRepository userRepository;
+    private final CustomerRepository customerRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
     private ConfigCache configCache;
 
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper,
-                             UserRepository userRepository) {
+                             UserRepository userRepository, CustomerRepository customerRepository,
+                             LocationRepository locationRepository) {
         this.ticketMapper = ticketMapper;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
+        this.locationRepository = locationRepository;
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -46,12 +53,21 @@ public class TicketServiceImpl implements TicketService{
         String ticketId = "TK" + String.format("%07d",ticketNum);
         ticket.setTicketId(ticketId);
 
+        if (ticketDTO.getCustomer() != null && ticketDTO.getCustomer().getId() != null) {
+            customerRepository.findById(ticketDTO.getCustomer().getId())
+                    .ifPresent(ticket::setCustomer);
+        }
+
         if (ticketDTO.getUserId() != null && ticketDTO.getUserId() > 0) {
             User user = Optional.ofNullable(userRepository.findById(ticketDTO.getUserId()))
                     .get().orElse(null);
             ticket.setUser(user);
         }
 
+        if (ticketDTO.getLocation() != null && ticketDTO.getLocation().getId() != null) {
+            locationRepository.findById(ticketDTO.getLocation().getId())
+                    .ifPresent(ticket::setLocation);
+        }
         Ticket newTicket = ticketRepository.save(ticket);
         return ticketMapper.ticketToTicketDto(newTicket);
     }
