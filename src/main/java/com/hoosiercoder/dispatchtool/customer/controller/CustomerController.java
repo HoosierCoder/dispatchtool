@@ -19,7 +19,6 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // Standard Constructor Injection
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
@@ -36,8 +35,12 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-        return ResponseEntity.ok(customerService.getAllCustomers());
+    public ResponseEntity<List<CustomerDTO>> listCustomers() {
+        List<CustomerDTO> customers = customerService.listCustomers();
+        if (customers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(customers);
     }
 
     @PutMapping("/{id}")

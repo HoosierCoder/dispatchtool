@@ -1,10 +1,10 @@
 package com.hoosiercoder.dispatchtool.user.entity;
 
+import com.hoosiercoder.dispatchtool.entity.BaseTenantEntity;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 
@@ -12,8 +12,8 @@ import java.time.Instant;
  * Author: HoosierCoder
  */
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "users")
+public class User extends BaseTenantEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long userId;

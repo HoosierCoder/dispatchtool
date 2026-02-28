@@ -1,6 +1,7 @@
 package com.hoosiercoder.dispatchtool.ticket.service;
 
 import com.hoosiercoder.dispatchtool.config.ConfigCache;
+import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.customer.repository.CustomerRepository;
 import com.hoosiercoder.dispatchtool.location.repository.LocationRepository;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
@@ -46,86 +47,51 @@ public class TicketServiceImpl implements TicketService{
 
     @Override
     public TicketDTO saveNewTicket(TicketDTO ticketDTO) {
+        String tenantId = TenantContext.getTenantId();
         Ticket ticket = ticketMapper.ticketDtoToTicket(ticketDTO);
-        //any ticketId included in ticketDTO will be ignored
-        //TicketId assigned here
-        Long ticketNum = configCache.getNextTicketNumber();
-        String ticketId = "TK" + String.format("%07d",ticketNum);
-        ticket.setTicketId(ticketId);
 
-        if (ticketDTO.getCustomer() != null && ticketDTO.getCustomer().getId() != null) {
-            customerRepository.findById(ticketDTO.getCustomer().getId())
-                    .ifPresent(ticket::setCustomer);
-        }
+        Long ticketNum = configCache.getNextTicketNumber(tenantId);
+        ticket.setTicketId("TKT" + String.format("%07d", ticketNum.intValue()));
 
-        if (ticketDTO.getUserId() != null && ticketDTO.getUserId() > 0) {
-            User user = Optional.ofNullable(userRepository.findById(ticketDTO.getUserId()))
-                    .get().orElse(null);
-            ticket.setUser(user);
-        }
+        ticket.setTenantId(tenantId);
 
-        if (ticketDTO.getLocation() != null && ticketDTO.getLocation().getId() != null) {
-            locationRepository.findById(ticketDTO.getLocation().getId())
-                    .ifPresent(ticket::setLocation);
-        }
         Ticket newTicket = ticketRepository.save(ticket);
         return ticketMapper.ticketToTicketDto(newTicket);
     }
 
     @Override
     public List<TicketDTO> listTickets() {
-        return ticketRepository.findAll()
-                .stream().map(ticketMapper::ticketToTicketDto)
-                .collect(Collectors.toList());
-    }
-
-    /*@Override
-    public List<TicketDTO> listDispatchedTickets() {
-        return ticketRepository.findByIsDispatchedTrue().stream()
+        String tenantId = TenantContext.getTenantId();
+        return ticketRepository.findByTenantId(tenantId)
+                .stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public List<TicketDTO> listClosedTickets() {
-        return ticketRepository.findByIsClosedTrue().stream()
-                .map(ticketMapper::ticketToTicketDto)
-                .collect(Collectors.toList());
-    }*/
-
-    /*@Override
-    public List<TicketDTO> listOpenTickets() {
-        return ticketRepository.findByIsClosedFalse().stream()
-                .map(ticketMapper::ticketToTicketDto)
-                .collect(Collectors.toList());
-    }*/
-
-    /*@Override
-    public List<TicketDTO> findDispatchedTicketsByDate(Date date) {
-        return ticketRepository.findByDateDispatched(date).stream()
-                .map(ticketMapper::ticketToTicketDto)
-                .collect(Collectors.toList());
-    }*/
 
     @Override
     public List<TicketDTO> findByUser(Long userId) {
-        User user = userRepository.findByUserId(userId);
-
-        return ticketRepository.findByUser(user).stream()
+        // We filter by BOTH to prevent cross-tenant data leaks
+        String tenantId = TenantContext.getTenantId();
+        return ticketRepository.findByTenantIdAndUser_UserId(tenantId,userId)
+                .stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<TicketDTO> findUnassignedTickets() {
-        return ticketRepository.findByUserIsNull().stream()
+        String tenantId = TenantContext.getTenantId();
+        return ticketRepository.findByTenantIdAndUserIsNull(tenantId).stream()
                 .map(ticketMapper::ticketToTicketDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public Optional<TicketDTO> getByTicketId(String ticketId) {
-        return Optional.ofNullable(ticketMapper.ticketToTicketDto(ticketRepository.findById(ticketId)
-                .orElse(null)));
+        String tenantId = TenantContext.getTenantId();
+        //return Optional.ofNullable(ticketMapper.ticketToTicketDto(ticketRepository.findById(ticketId)
+        //        .orElse(null)));
+        return Optional.ofNullable(ticketMapper.ticketToTicketDto(
+                ticketRepository.findByTenantIdAndTicketId(tenantId, ticketId).orElse(null)));
     }
 }

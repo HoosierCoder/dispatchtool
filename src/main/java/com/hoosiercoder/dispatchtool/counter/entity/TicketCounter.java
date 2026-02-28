@@ -15,25 +15,16 @@ import jakarta.validation.constraints.NotNull;
 public class TicketCounter {
 
     @Id
-    private Long counterId;
+    @Column(name = "tenant_id", length = 50)
+    private String tenantId;
 
     @NotNull
     @Column(nullable = false)
     private Long counter;
 
-    public Long getCountId() {
-        return counterId;
-    }
-
-    public void setCountId(Long counterId) {
-        this.counterId = counterId;
-    }
-
-    public Long getCounter() {
-        return counter;
-    }
-
-    public void setCounter(Long counter) {
-        this.counter = counter;
-    }
+    // Getters and Setters
+    public String getTenantId() { return tenantId; }
+    public void setTenantId(String tenantId) { this.tenantId = tenantId; }
+    public Long getCounter() { return counter; }
+    public void setCounter(Long counter) { this.counter = counter; }
 }

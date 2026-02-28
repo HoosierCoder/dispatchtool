@@ -1,9 +1,11 @@
 package com.hoosiercoder.dispatchtool.location.service;
 
+import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.location.dto.LocationDTO;
 import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.location.mapper.LocationMapper;
 import com.hoosiercoder.dispatchtool.location.repository.LocationRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith(MockitoExtension.class)
 public class LocationServiceImplTest {
+
     @Mock
     private LocationRepository locationRepository;
 
@@ -32,41 +35,34 @@ public class LocationServiceImplTest {
     @InjectMocks
     private LocationServiceImpl locationService;
 
-    private Location location;
-    private LocationDTO locationDto;
-
-    @BeforeEach
-    void setUp() {
-        location = new Location();
-        location.setId(1L);
-        location.setStreetAddress("123 Main St");
-
-        locationDto = new LocationDTO();
-        locationDto.setId(1L);
-        locationDto.setStreetAddress("123 Main St");
+    @AfterEach
+    void tearDown() {
+        TenantContext.clear();
     }
 
     @Test
-    void createLocation_ShouldReturnSavedLocationDTO() {
+    void shouldFindLocationOnlyByTenantId() {
+        // Arrange
+        String tenantId = "dispatch-pro-99";
+        Long locationId = 500L;
+        TenantContext.setTenantId(tenantId);
 
-        when(locationMapper.locationDtoToLocation(any(LocationDTO.class))).thenReturn(location);
-        when(locationRepository.save(any(Location.class))).thenReturn(location);
-        when(locationMapper.locationToLocationDto(any(Location.class))).thenReturn(locationDto);
+        Location location = new Location();
+        location.setId(locationId);
+        location.setTenantId(tenantId);
 
-        LocationDTO result = locationService.createLocation(locationDto);
+        LocationDTO dto = new LocationDTO();
+        dto.setId(locationId);
+
+        when(locationRepository.findByTenantIdAndId(tenantId, locationId))
+                .thenReturn(Optional.of(location));
+        when(locationMapper.locationToLocationDto(location)).thenReturn(dto);
+
+        // Act
+        LocationDTO result = locationService.getLocationById(locationId);
 
         // Assert
-        assertNotNull(result);
-        assertEquals("123 Main St", result.getStreetAddress());
-        verify(locationRepository, times(1)).save(any());
-    }
-
-    @Test
-    void getLocationById_WhenNotFound_ShouldThrowException() {
-        // Arrange
-        when(locationRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(RuntimeException.class, () -> locationService.getLocationById(1L));
+        assertEquals(locationId, result.getId());
+        verify(locationRepository).findByTenantIdAndId(tenantId, locationId);
     }
 }

@@ -1,5 +1,6 @@
 package com.hoosiercoder.dispatchtool.location.service;
 
+import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.location.dto.LocationDTO;
 import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.location.mapper.LocationMapper;
@@ -18,7 +19,6 @@ public class LocationServiceImpl implements LocationService {
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
 
-    // Standard Constructor Injection
     public LocationServiceImpl(LocationRepository locationRepository, LocationMapper locationMapper) {
         this.locationRepository = locationRepository;
         this.locationMapper = locationMapper;
@@ -26,17 +26,22 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public LocationDTO createLocation(LocationDTO locationDto) {
-
+        String tenantId = TenantContext.getTenantId();
         Location location = locationMapper.locationDtoToLocation(locationDto);
 
-        Location savedLocation = locationRepository.save(location);
+        // Ensure the new location is tagged with the current tenant
+        location.setTenantId(tenantId);
 
+        Location savedLocation = locationRepository.save(location);
         return locationMapper.locationToLocationDto(savedLocation);
     }
 
     @Override
-    public List<LocationDTO> getAllLocations() {
-        return locationRepository.findAll()
+    public List<LocationDTO> listLocations() {
+        String tenantId = TenantContext.getTenantId();
+
+        // Use the tenant-specific repository method
+        return locationRepository.findByTenantId(tenantId)
                 .stream()
                 .map(locationMapper::locationToLocationDto)
                 .collect(Collectors.toList());
@@ -44,8 +49,12 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public LocationDTO getLocationById(Long id) {
-        Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
+        String tenantId = TenantContext.getTenantId();
+
+        // Use findByTenantIdAndId to prevent cross-tenant access
+        Location location = locationRepository.findByTenantIdAndId(tenantId, id)
+                .orElseThrow(() -> new RuntimeException("Location not found or access denied"));
+
         return locationMapper.locationToLocationDto(location);
     }
 }

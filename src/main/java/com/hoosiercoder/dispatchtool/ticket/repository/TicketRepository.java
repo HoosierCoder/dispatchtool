@@ -6,12 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface TicketRepository  extends JpaRepository<Ticket, String> {
 
-    public List<Ticket> findByUser(User user);
+    List<Ticket> findByTenantIdAndUser_UserId(String tenantId, Long userId);
 
-    public List<Ticket> findByDateDispatched(Date dispatchDate);
+    List<Ticket> findByTenantId(String tenantId);
 
-    public List<Ticket> findByUserIsNull();
+    List<Ticket> findByTenantIdAndUserIsNull(String tenantId);
+
+    Optional<Ticket> findByTenantIdAndTicketId(String tenantId, String ticketId);
 }
