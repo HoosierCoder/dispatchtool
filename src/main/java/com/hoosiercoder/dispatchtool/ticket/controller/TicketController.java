@@ -1,5 +1,6 @@
 package com.hoosiercoder.dispatchtool.ticket.controller;
 
+import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
 import com.hoosiercoder.dispatchtool.ticket.service.TicketService;
 import jakarta.validation.Valid;
@@ -33,10 +34,10 @@ public class TicketController {
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets() {
 
+        // Pass the context from the header
         List<TicketDTO> tickets = ticketService.listTickets();
 
         if (tickets.isEmpty()) {
-            //No return (204) returned
             return ResponseEntity.noContent().build();
         }
 
@@ -80,13 +81,14 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
-    @GetMapping("/byUsers")
-    public ResponseEntity<List<TicketDTO>> getByUserId(@PathVariable Long userId) {
+    @GetMapping("/byUsers/{userId}")
+    public ResponseEntity<List<TicketDTO>> getByUserId(
+            @RequestHeader("X-Tenant-ID") String tenantId,
+            @PathVariable Long userId) {
 
         List<TicketDTO> tickets = ticketService.findByUser(userId);
 
         if (tickets.isEmpty()) {
-            //No return (204) returned
             return ResponseEntity.noContent().build();
         }
 

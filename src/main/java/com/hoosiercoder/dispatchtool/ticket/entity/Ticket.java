@@ -1,10 +1,13 @@
 package com.hoosiercoder.dispatchtool.ticket.entity;
 
 import com.hoosiercoder.dispatchtool.customer.entity.Customer;
+import com.hoosiercoder.dispatchtool.entity.BaseTenantEntity;
 import com.hoosiercoder.dispatchtool.location.entity.Location;
+import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.user.entity.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,7 +20,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "ticket")
-public class Ticket {
+public class Ticket extends BaseTenantEntity {
 
     @Id
     private String ticketId;
@@ -148,4 +151,5 @@ public class Ticket {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
 }

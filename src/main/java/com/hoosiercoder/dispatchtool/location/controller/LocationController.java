@@ -18,24 +18,32 @@ import java.util.List;
 public class LocationController {
     private final LocationService locationService;
 
-    // Constructor Injection (Keeping with our theme!)
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }
 
     @PostMapping
     public ResponseEntity<LocationDTO> createLocation(@Valid @RequestBody LocationDTO locationDto) {
+        // ID is usually null for new creations; the service handles tenant assignment
         LocationDTO createdLocation = locationService.createLocation(locationDto);
         return new ResponseEntity<>(createdLocation, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> getAllLocations() {
-        return ResponseEntity.ok(locationService.getAllLocations());
+    public ResponseEntity<List<LocationDTO>> listLocations() {
+        // Changed from getAllLocations to listLocations for consistency
+        List<LocationDTO> locations = locationService.listLocations();
+
+        if (locations.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(locations);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LocationDTO> getLocationById(@PathVariable Long id) {
+        // Service handles the tenant-scoping safety check
         return ResponseEntity.ok(locationService.getLocationById(id));
     }
 }

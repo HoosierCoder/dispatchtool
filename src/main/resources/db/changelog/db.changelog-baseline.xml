@@ -1,0 +1,141 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="dennis (generated)" id="1772244741444-1">
+        <preConditions onFail="CONTINUE">
+            <not><tableExists tableName="customer"/></not>
+        </preConditions>
+        <createTable tableName="customer">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(50)"/>
+            <column name="last_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="phone_number" type="VARCHAR(20)"/>
+            <column name="billing_location_id" type="BIGINT"/>
+            <column name="tenant_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="dennis (generated)" id="1772244741444-2">
+        <preConditions onFail="CONTINUE">
+            <not><tableExists tableName="location"/></not>
+        </preConditions>
+        <createTable tableName="location">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="street_address" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="apartment_number" type="VARCHAR(50)"/>
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="zip_code" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tenant_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="dennis (generated)" id="1772244741444-3">
+        <preConditions onFail="CONTINUE">
+            <not><tableExists tableName="tenants"/></not>
+        </preConditions>
+        <createTable tableName="tenants">
+            <column name="tenant_id" type="VARCHAR(50)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="company_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="primary_contact_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="primary_contact_email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="active" type="BIT(1)"/>
+            <column defaultValue="TRIAL" name="account_status" type="VARCHAR(20)"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP(0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="dennis (generated)" id="1772244741444-4">
+        <preConditions onFail="CONTINUE">
+            <not><tableExists tableName="ticket"/></not>
+        </preConditions>
+        <createTable tableName="ticket">
+            <column name="ticket_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="summary" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="user_id" type="BIGINT"/>
+            <column name="date_dispatched" type="datetime(6)"/>
+            <column name="created_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="UNASSIGNED" name="status" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="BIGINT"/>
+            <column name="customer_id" type="BIGINT"/>
+            <column name="tenant_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="dennis (generated)" id="1772244741444-5">
+        <preConditions onFail="CONTINUE">
+            <not><tableExists tableName="users"/></not>
+        </preConditions>
+        <createTable tableName="users">
+            <column autoIncrement="true" name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP(0)"/>
+            <column name="modified_date" type="TIMESTAMP(0)"/>
+            <column defaultValueNumeric="0" name="is_active" type="BIT(1)"/>
+            <column name="hashed_password" type="VARCHAR(60)"/>
+            <column name="username" type="VARCHAR(30)"/>
+            <column name="tenant_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="dennis (generated)" id="1772244741444-6">
+        <createIndex indexName="fk_customer_billing_location" tableName="customer">
+            <column name="billing_location_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

@@ -1,5 +1,7 @@
 package com.hoosiercoder.dispatchtool.location.entity;
 
+import com.hoosiercoder.dispatchtool.entity.BaseTenantEntity;
+import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
 import jakarta.persistence.*;
 
 /**
@@ -8,7 +10,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "location")
-public class Location {
+public class Location extends BaseTenantEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,4 +70,5 @@ public class Location {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
 }

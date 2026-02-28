@@ -5,5 +5,6 @@ package com.hoosiercoder.dispatchtool.counter.service;
  *
  */
 public interface TicketCounterService {
-    public String getNextFormattedTicketNumber();
+    // We now pass the tenantId to ensure we get the right sequence
+    String getNextFormattedTicketNumber(String tenantId);
 }

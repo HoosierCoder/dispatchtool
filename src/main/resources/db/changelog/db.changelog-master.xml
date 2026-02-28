@@ -4,60 +4,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/create_user.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="2" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/drop_create_user.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="3" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/add_created_modified_fields_user.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="4" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/update_user_column_names.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="5" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/update_user_add_is_active_column.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="6" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/create_ticket_counter.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="7" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/insert_initial_ticket_counter_value.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="8" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/create_ticket_table.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="9" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/update_ticket_add_is_closed_column.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="10" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/update_user_add_hashed_password.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="11" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/add_ticket_status_column.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="12" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/remove_isclosed_isdispatched_from_ticket.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="13" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/create_location_update_ticket_tables.sql" relativeToChangelogFile="true"/>
-    </changeSet>
-
-    <changeSet id="14" author="HoosierCoder" failOnError="true">
-        <sqlFile path="scripts/create_customer_update_ticket.sql" relativeToChangelogFile="true"/>
-    </changeSet>
+    <include file="db.changelog-baseline.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
