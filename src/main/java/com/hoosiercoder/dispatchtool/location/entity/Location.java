@@ -1,7 +1,6 @@
 package com.hoosiercoder.dispatchtool.location.entity;
 
 import com.hoosiercoder.dispatchtool.entity.BaseTenantEntity;
-import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
 import jakarta.persistence.*;
 
 /**

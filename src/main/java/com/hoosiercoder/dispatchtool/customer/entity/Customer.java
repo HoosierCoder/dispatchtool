@@ -2,12 +2,8 @@ package com.hoosiercoder.dispatchtool.customer.entity;
 
 import com.hoosiercoder.dispatchtool.entity.BaseTenantEntity;
 import com.hoosiercoder.dispatchtool.location.entity.Location;
-import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
 import com.hoosiercoder.dispatchtool.ticket.entity.Ticket;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 
 import java.util.List;
 

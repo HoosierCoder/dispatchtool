@@ -9,12 +9,10 @@ import com.hoosiercoder.dispatchtool.ticket.entity.Ticket;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.mapper.TicketMapper;
 import com.hoosiercoder.dispatchtool.ticket.repository.TicketRepository;
-import com.hoosiercoder.dispatchtool.user.entity.User;
 import com.hoosiercoder.dispatchtool.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

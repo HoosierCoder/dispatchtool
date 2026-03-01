@@ -3,7 +3,6 @@ package com.hoosiercoder.dispatchtool.customer.dto;
 import com.hoosiercoder.dispatchtool.location.dto.LocationDTO;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
 
 /**
  * Author: HoosierCoder
