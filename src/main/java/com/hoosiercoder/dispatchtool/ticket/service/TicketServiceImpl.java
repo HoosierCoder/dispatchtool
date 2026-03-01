@@ -6,6 +6,7 @@ import com.hoosiercoder.dispatchtool.customer.repository.CustomerRepository;
 import com.hoosiercoder.dispatchtool.location.repository.LocationRepository;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
 import com.hoosiercoder.dispatchtool.ticket.entity.Ticket;
+import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.mapper.TicketMapper;
 import com.hoosiercoder.dispatchtool.ticket.repository.TicketRepository;
 import com.hoosiercoder.dispatchtool.user.entity.User;
@@ -93,5 +94,24 @@ public class TicketServiceImpl implements TicketService{
         //        .orElse(null)));
         return Optional.ofNullable(ticketMapper.ticketToTicketDto(
                 ticketRepository.findByTenantIdAndTicketId(tenantId, ticketId).orElse(null)));
+    }
+
+    @Override
+    public List<TicketDTO> findTicketsByRange(java.time.Instant start, java.time.Instant end) {
+        String tenantId = TenantContext.getTenantId();
+
+        return ticketRepository.findByTenantIdAndCreatedDateBetween(tenantId, start, end)
+                .stream()
+                .map(ticketMapper::ticketToTicketDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TicketDTO> findTicketsByRangeAndStatus(java.time.Instant start, java.time.Instant end, TicketStatus status) {
+        String tenantId = TenantContext.getTenantId();
+        return ticketRepository.findByTenantIdAndStatusAndCreatedDateBetween(tenantId, status, start, end)
+                .stream()
+                .map(ticketMapper::ticketToTicketDto)
+                .collect(Collectors.toList());
     }
 }

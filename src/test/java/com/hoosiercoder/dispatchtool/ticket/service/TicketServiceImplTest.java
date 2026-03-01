@@ -10,6 +10,7 @@ import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.mapper.TicketMapper;
 import com.hoosiercoder.dispatchtool.ticket.repository.TicketRepository;
 import com.hoosiercoder.dispatchtool.user.repository.UserRepository;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -133,5 +134,28 @@ public class TicketServiceImplTest {
         // Assert
         assertEquals(TENANT_A, entity.getTenantId(), "The service must force the Tenant ID from the Context");
         verify(ticketRepository).save(entity);
+    }
+
+    @Test
+    void shouldFilterTicketsByDateRangeAndTenant() {
+        // Arrange
+        TenantContext.setTenantId(TENANT_A);
+        java.time.Instant now = java.time.Instant.now();
+        java.time.Instant yesterday = now.minus(1, ChronoUnit.DAYS);
+        java.time.Instant tomorrow = now.plus(1, ChronoUnit.DAYS);
+
+        Ticket t1 = new Ticket();
+        t1.setTicketId("T-1");
+
+        when(ticketRepository.findByTenantIdAndCreatedDateBetween(TENANT_A, yesterday, tomorrow))
+                .thenReturn(List.of(t1));
+        when(ticketMapper.ticketToTicketDto(any())).thenReturn(new TicketDTO());
+
+        // Act
+        List<TicketDTO> results = ticketService.findTicketsByRange(yesterday, tomorrow);
+
+        // Assert
+        assertEquals(1, results.size());
+        verify(ticketRepository).findByTenantIdAndCreatedDateBetween(TENANT_A, yesterday, tomorrow);
     }
 }
