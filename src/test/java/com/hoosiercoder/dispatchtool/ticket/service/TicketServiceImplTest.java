@@ -10,7 +10,6 @@ import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.mapper.TicketMapper;
 import com.hoosiercoder.dispatchtool.ticket.repository.TicketRepository;
 import com.hoosiercoder.dispatchtool.user.repository.UserRepository;
-import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 

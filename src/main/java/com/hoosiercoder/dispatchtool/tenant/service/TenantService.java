@@ -1,7 +1,6 @@
 package com.hoosiercoder.dispatchtool.tenant.service;
 
 import com.hoosiercoder.dispatchtool.tenant.dto.TenantDTO;
-import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
 
 import java.util.List;
 import java.util.Optional;

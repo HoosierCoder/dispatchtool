@@ -1,6 +1,5 @@
 package com.hoosiercoder.dispatchtool.ticket.controller;
 
-import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
 import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.service.TicketService;
