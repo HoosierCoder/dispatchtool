@@ -2,6 +2,7 @@ package com.hoosiercoder.dispatchtool.ticket.controller;
 
 import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.ticket.dto.TicketDTO;
+import com.hoosiercoder.dispatchtool.ticket.enums.TicketStatus;
 import com.hoosiercoder.dispatchtool.ticket.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,27 @@ public class TicketController {
             return ResponseEntity.noContent().build();
         }
 
+        return ResponseEntity.ok(tickets);
+    }
+
+    @GetMapping("/search/dates")
+    public ResponseEntity<List<TicketDTO>> searchByDateRange(
+            @RequestParam("start") java.time.Instant start,
+            @RequestParam("end") java.time.Instant end) {
+
+        // The Service handles the Tenant ID lookup automatically via the Context
+        List<TicketDTO> tickets = ticketService.findTicketsByRange(start, end);
+
+        return ResponseEntity.ok(tickets);
+    }
+
+    @GetMapping("/search/status")
+    public ResponseEntity<List<TicketDTO>> searchByDateAndStatus(
+            @RequestParam("start") java.time.Instant start,
+            @RequestParam("end") java.time.Instant end,
+            @RequestParam("status") TicketStatus status) {
+
+        List<TicketDTO> tickets = ticketService.findTicketsByRangeAndStatus(start, end, status);
         return ResponseEntity.ok(tickets);
     }
 }

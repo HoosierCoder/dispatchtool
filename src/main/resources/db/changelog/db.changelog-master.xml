@@ -6,4 +6,8 @@
 
     <include file="db.changelog-baseline.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="seed_data" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/seed_data.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>
