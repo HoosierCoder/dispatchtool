@@ -49,6 +49,7 @@ public class User extends BaseTenantEntity {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userRole = userRole;
+        this.isActive = isActive;
     }
 
     public User() {
