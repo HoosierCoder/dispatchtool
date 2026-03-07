@@ -23,6 +23,8 @@ public class UserDTO {
 
     private boolean isActive;
 
+    private String tenantName;
+
     public UserDTO(String firstName, String lastName, UserRole userRole, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -71,6 +73,14 @@ public class UserDTO {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getTenantName() {
+        return tenantName;
+    }
+
+    public void setTenantName(String tenantName) {
+        this.tenantName = tenantName;
     }
 
     @Override

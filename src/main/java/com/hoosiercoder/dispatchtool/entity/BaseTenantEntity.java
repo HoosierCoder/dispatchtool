@@ -1,7 +1,7 @@
 package com.hoosiercoder.dispatchtool.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
+import com.hoosiercoder.dispatchtool.tenant.entity.Tenant;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
@@ -15,6 +15,10 @@ import org.hibernate.annotations.ParamDef;
 @Filter(name = "tenantFilter", condition = "tenant_id = :tenantId")
 public abstract class BaseTenantEntity {
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id", insertable = false, updatable = false)
+    private Tenant tenant; // Direct access to the Tenant entity
+
     @Column(name = "tenant_id", nullable = false, updatable = false)
     private String tenantId;
 
@@ -24,5 +28,9 @@ public abstract class BaseTenantEntity {
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public Tenant getTenant() {
+        return tenant;
     }
 }
