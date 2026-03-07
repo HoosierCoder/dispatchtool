@@ -81,4 +81,11 @@ public class UserServiceImpl implements UserService {
                 .map(userMapper::userToUserDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Optional<UserDTO> getByUsername(String username) {
+        String tenantId = TenantContext.getTenantId();
+        return userRepository.findByTenantIdAndUsername(tenantId, username)
+                .map(userMapper::userToUserDto);
+    }
 }

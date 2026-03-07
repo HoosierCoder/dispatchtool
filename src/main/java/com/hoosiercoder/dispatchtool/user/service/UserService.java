@@ -21,4 +21,6 @@ public interface UserService {
     List<UserDTO> getUserByUserRole(UserRole userRole);
 
     List<UserDTO> getByIsActive();
+
+    Optional<UserDTO> getByUsername(String username);
 }

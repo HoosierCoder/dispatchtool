@@ -3,8 +3,8 @@ INSERT IGNORE INTO tenants (tenant_id, company_name, primary_contact_name, prima
 VALUES ('default-tenant', 'Hoosier Logic', 'Admin User', 'admin@hoosierlogic.com', true, 'ACTIVE');
 
 -- 2. Create the User (belongs to Tenant)
-INSERT IGNORE INTO users (user_id, first_name, last_name, username, user_role, is_active, tenant_id)
-VALUES (1, 'Ringo', 'Dude', 'rdude', 'ADMIN', true, 'default-tenant');
+INSERT IGNORE INTO users (user_id, first_name, last_name, username, hashed_password, user_role, is_active, tenant_id)
+VALUES (1, 'Ringo', 'Dude', 'rdude', '$2a$10$8.UnVuG9HHgffUDAlk8qnO5HmOE99XU1S.5G.66v/m0T0/1h.97pG', 'ADMIN', true, 'default-tenant');
 
 -- 3. Create the Location (belongs to Tenant)
 INSERT IGNORE INTO location (id, street_address, city, state, zip_code, tenant_id)
