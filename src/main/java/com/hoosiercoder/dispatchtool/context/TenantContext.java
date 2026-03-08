@@ -1,21 +1,19 @@
 package com.hoosiercoder.dispatchtool.context;
 
-/**
- * Author: HoosierCoder
- *
- */
 public class TenantContext {
-    private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
 
-    public static void setTenantId(String tenantId) {
-        CURRENT_TENANT.set(tenantId);
-    }
+    public static final String SYSTEM_TENANT = "SYSTEM";
+    private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
 
     public static String getTenantId() {
-        return CURRENT_TENANT.get();
+        return currentTenant.get();
+    }
+
+    public static void setTenantId(String tenantId) {
+        currentTenant.set(tenantId);
     }
 
     public static void clear() {
-        CURRENT_TENANT.remove();
+        currentTenant.remove();
     }
 }

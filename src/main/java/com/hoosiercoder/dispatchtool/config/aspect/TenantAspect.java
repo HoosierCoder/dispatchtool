@@ -22,9 +22,10 @@ public class TenantAspect {
     // This "Pointcut" tells Spring to run this before any method in your repository package
     @Before("execution(* com.hoosiercoder.dispatchtool.*.repository.*.*(..))")
     public void beforeRepositoryMethod() {
-        String tenantId = TenantContext.getTenantId(); //
+        String tenantId = TenantContext.getTenantId();
 
-        if (tenantId != null) {
+        // Only enable the filter if a specific, non-system tenant is set
+        if (tenantId != null && !tenantId.equals(TenantContext.SYSTEM_TENANT)) {
             // Unwrapping the Hibernate Session from the EntityManager
             Session session = entityManager.unwrap(Session.class);
             // Enabling the filter we defined in the Entity

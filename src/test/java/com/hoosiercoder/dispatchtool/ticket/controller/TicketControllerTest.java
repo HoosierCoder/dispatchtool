@@ -27,7 +27,7 @@ import static org.hamcrest.Matchers.is;
 
 
 @WebMvcTest(TicketController.class)
-@WithMockUser
+@WithMockUser(roles = "SYSTEM_ADMIN")
 public class TicketControllerTest {
 
     @Autowired

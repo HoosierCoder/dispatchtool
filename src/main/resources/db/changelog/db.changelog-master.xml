@@ -14,4 +14,8 @@
         <sqlFile path="scripts/add_fk_users_tenants.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="13_add_missing_tenant_columns" author="HoosierCoder" failOnError="true">
+        <sqlFile path="scripts/add_missing_tenant_columns.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

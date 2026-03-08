@@ -11,6 +11,9 @@ import java.util.Optional;
  * Author: HoosierCoder
  */
 public interface UserRepository extends JpaRepository<User, Long> {
+    // For global, system-level users (like SYSTEM_ADMIN)
+    Optional<User> findByUsername(String username);
+
     List<User> findByTenantId(String tenantId);
     Optional<User> findByTenantIdAndUserId(String tenantId, Long id);
     List<User> findByTenantIdAndLastName(String tenantId, String lastName);
