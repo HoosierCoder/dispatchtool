@@ -1,16 +1,18 @@
 package com.hoosiercoder.dispatchtool.config.security;
 
+import com.hoosiercoder.dispatchtool.context.TenantContext;
 import com.hoosiercoder.dispatchtool.user.entity.User;
 import com.hoosiercoder.dispatchtool.user.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.hoosiercoder.dispatchtool.context.TenantContext;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Author: HoosierCoder
@@ -19,6 +21,7 @@ import java.util.Collections;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
     private final UserRepository userRepository;
 
     public CustomUserDetailsService(UserRepository userRepository) {
@@ -27,11 +30,34 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String tenantId = TenantContext.getTenantId();
+        logger.info("Attempting to load user: {}", username);
 
-        // Corrected: Removed the stray (username) and the misplaced semicolon
-        User user = userRepository.findByTenantIdAndUsername(tenantId, username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        final Optional<User> userOptional;
+        String tenantIdForContext;
+
+        if (username.contains("@")) {
+            // Tenant-level user: "user@tenant"
+            final String[] parts = username.split("@", 2);
+            String actualUsername = parts[0];
+            String tenantId = parts[1];
+            logger.info("Parsed tenant user. Username: {}, tenantId: {}", actualUsername, tenantId);
+            userOptional = userRepository.findByTenantIdAndUsername(tenantId, actualUsername);
+            tenantIdForContext = tenantId;
+        } else {
+            // System-level user (e.g., SYSTEM_ADMIN)
+            logger.info("Parsed system user. Username: {}", username);
+            userOptional = userRepository.findByUsername(username);
+            tenantIdForContext = TenantContext.SYSTEM_TENANT; // Set special context for system user
+        }
+
+        User user = userOptional.orElseThrow(() -> {
+            logger.error("User not found: {}", username);
+            return new UsernameNotFoundException("User not found: " + username);
+        });
+
+        // Set the context for the rest of the request
+        TenantContext.setTenantId(tenantIdForContext);
+        logger.info("User found: {}. Setting TenantContext to: {}", user.getUsername(), tenantIdForContext);
 
         // Spring expects roles to be prefixed with "ROLE_"
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name());

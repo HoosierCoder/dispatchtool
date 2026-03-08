@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-@WithMockUser
+@WithMockUser(roles = "SYSTEM_ADMIN")
 public class UserControllerTest {
 
     @Autowired
