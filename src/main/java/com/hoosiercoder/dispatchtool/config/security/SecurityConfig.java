@@ -1,5 +1,6 @@
 package com.hoosiercoder.dispatchtool.config.security;
 
+import com.hoosiercoder.dispatchtool.config.filter.TenantFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
 /**
  * Author: HoosierCoder
@@ -18,9 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler successHandler;
+    private final TenantFilter tenantFilter;
 
-    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler) {
+    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler, TenantFilter tenantFilter) {
         this.successHandler = successHandler;
+        this.tenantFilter = tenantFilter;
     }
 
     @Bean
@@ -43,7 +47,7 @@ public class SecurityConfig {
 
                         // 4. Tenant-level routes
                         // We allow SYSTEM_ADMIN here so you can impersonate or troubleshoot
-                        .requestMatchers("/tenant/**").hasAnyRole("SYSTEM_ADMIN", "ADMIN")
+                        .requestMatchers("/tenant/**").hasAnyRole("SYSTEM_ADMIN", "ADMIN", "MANAGER", "LEAD", "ASSOCIATE")
 
                         // 5. Everything else requires a login
                         .anyRequest().authenticated()
@@ -58,7 +62,9 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 // Enable HTTP Basic Authentication for API clients (like Postman)
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults())
+                // Add the TenantFilter after the SecurityContext is established
+                .addFilterAfter(tenantFilter, AnonymousAuthenticationFilter.class);
 
         return http.build();
     }

@@ -1,68 +1,214 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      class="dark"> <!-- Default to dark mode, JS will adjust -->
 <head>
-  <title>Dispatch | Tenant Dashboard</title>
+  <title>Dispatch | Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+  <script>
+    // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  </script>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans">
+<body class="bg-gray-50 text-gray-900 dark:bg-slate-900 dark:text-slate-100 font-sans transition-colors duration-200">
 
 <div class="flex h-screen">
-  <aside class="w-64 bg-slate-800 border-r border-teal-900/50 p-6">
-    <h1 class="text-2xl font-bold text-teal-400 mb-8">Dispatch</h1>
-    <nav class="space-y-4">
-      <a href="#" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Branch Overview</a>
-      <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Team Management</a>
-      <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Active Tickets</a>
-      <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Reports</a>
+  <aside class="w-64 bg-white dark:bg-slate-800 border-r border-gray-200 dark:border-teal-900/50 p-6 flex flex-col transition-colors duration-200">
+    <h1 class="text-2xl font-bold text-teal-600 dark:text-teal-400 mb-8">Dispatch</h1>
+    <nav class="space-y-4 flex-1">
+      <a href="#" class="block py-2.5 px-4 rounded bg-teal-50 text-teal-700 dark:bg-teal-600/20 dark:text-teal-300">Dashboard</a>
+      <a href="#" class="block py-2.5 px-4 rounded hover:bg-gray-100 dark:hover:bg-slate-700 transition">My Tickets</a>
+      <!-- Only show for Managers/Leads -->
+      <a href="#" sec:authorize="hasAnyRole('MANAGER', 'LEAD', 'ADMIN')" class="block py-2.5 px-4 rounded hover:bg-gray-100 dark:hover:bg-slate-700 transition">Team Management</a>
     </nav>
 
-    <div class="mt-auto pt-8 border-t border-slate-700">
-      <p class="text-xs text-teal-500 uppercase font-bold tracking-widest mb-1" th:text="${branchName}">Branch Name</p>
-      <p class="text-sm text-slate-400 font-medium" sec:authentication="name">Username</p>
-      <p class="text-xs text-slate-500 mb-4" sec:authentication="principal.authorities"></p>
+    <div class="pt-8 border-t border-gray-200 dark:border-slate-700">
+      <div class="flex justify-between items-center mb-4">
+        <p class="text-xs text-teal-600 dark:text-teal-500 uppercase font-bold tracking-widest" th:text="${branchName}">Branch Name</p>
+
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-slate-700 rounded-lg text-sm p-2.5">
+            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
+      </div>
+
+      <p class="text-sm text-gray-600 dark:text-slate-400 font-medium" th:text="${user.firstName} + ' ' + ${user.lastName}">User Name</p>
+      <p class="text-xs text-gray-500 dark:text-slate-500 mb-4" th:text="${user.userRole}">Role</p>
 
       <form th:action="@{/logout}" method="post">
-        <button type="submit" class="w-full text-left text-xs text-rose-400 hover:text-rose-300 transition">
+        <button type="submit" class="w-full text-left text-xs text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition">
           Sign Out
         </button>
       </form>
     </div>
   </aside>
 
-  <main class="flex-1 p-10 overflow-y-auto">
+  <main class="flex-1 p-10 overflow-y-auto bg-gray-50 dark:bg-slate-900 transition-colors duration-200">
     <header class="mb-10 flex justify-between items-center">
       <div>
-        <h2 class="text-3xl font-semibold" th:text="${branchName}">Branch Dashboard</h2>
-        <p class="text-slate-400">Managing operations for your assigned territory.</p>
-      </div>
-      <div class="bg-teal-900/30 border border-teal-500/30 px-4 py-2 rounded text-teal-300 text-sm">
-        Branch Status: <span class="font-bold">Active</span>
+        <h2 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">Dashboard</h2>
+        <p class="text-gray-500 dark:text-slate-400">Welcome back, <span th:text="${user.firstName}">User</span>.</p>
       </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
-        <h3 class="text-lg font-medium mb-4">Open Tickets</h3>
-        <div class="text-4xl font-bold text-teal-400">24</div>
-        <p class="text-sm text-slate-500 mt-2">4 tickets require immediate lead attention.</p>
+    <!-- Stats Row (Managers Only) -->
+    <div th:if="${dashboard.stats != null}" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+      <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm dark:shadow-none transition-colors duration-200">
+        <h3 class="text-lg font-medium mb-2 text-gray-500 dark:text-slate-400">Total Open Tickets</h3>
+        <div class="text-4xl font-bold text-teal-600 dark:text-teal-400" th:text="${dashboard.stats['totalOpen']}">0</div>
       </div>
+      <!-- Add more stats here -->
+    </div>
 
-      <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
-        <h3 class="text-lg font-medium mb-4">Team Status</h3>
-        <div class="space-y-3">
-          <div class="flex justify-between text-sm">
-            <span class="text-slate-400">Leads On-Call</span>
-            <span class="text-teal-400 font-mono">3</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Main Column: Tickets -->
+      <div class="lg:col-span-2 space-y-8">
+
+        <!-- My Tickets -->
+        <div class="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm dark:shadow-none transition-colors duration-200">
+          <div class="p-6 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-teal-700 dark:text-teal-100">My Assigned Tickets</h3>
+            <span class="bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300 text-xs px-2 py-1 rounded-full" th:text="${#lists.size(dashboard.myTickets)}">0</span>
           </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-slate-400">Active Associates</span>
-            <span class="text-teal-400 font-mono">12</span>
+          <div class="p-0">
+            <table class="w-full text-left text-sm text-gray-600 dark:text-slate-400">
+              <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-slate-500 uppercase font-medium">
+                <tr>
+                  <th class="px-6 py-3">ID</th>
+                  <th class="px-6 py-3">Summary</th>
+                  <th class="px-6 py-3">Status</th>
+                  <th class="px-6 py-3">Date</th>
+                  <th class="px-6 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+                <tr th:each="ticket : ${dashboard.myTickets}" class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                  <td class="px-6 py-4 font-mono text-teal-600 dark:text-teal-400" th:text="${ticket.ticketId}">TKT-123</td>
+                  <td class="px-6 py-4 text-gray-900 dark:text-slate-200" th:text="${ticket.summary}">Fix the thing</td>
+                  <td class="px-6 py-4">
+                    <span class="px-2 py-1 rounded text-xs font-bold"
+                          th:classappend="${ticket.status.name() == 'OPEN' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-gray-100 text-gray-800 dark:bg-slate-700 dark:text-slate-300'}"
+                          th:text="${ticket.status}">OPEN</span>
+                  </td>
+                  <td class="px-6 py-4" th:text="${#dates.format(ticket.createdDate, 'MMM dd')}">Feb 28</td>
+                  <td class="px-6 py-4">
+                    <a href="#" class="text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300">View</a>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(dashboard.myTickets)}">
+                  <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-slate-500">You have no assigned tickets. Great job!</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+
+        <!-- Unassigned Tickets (If available) -->
+        <div th:if="${dashboard.unassignedTickets != null}" class="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm dark:shadow-none transition-colors duration-200">
+          <div class="p-6 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
+            <h3 class="text-lg font-medium text-amber-700 dark:text-amber-100">Unassigned Tickets</h3>
+            <span class="bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 text-xs px-2 py-1 rounded-full" th:text="${#lists.size(dashboard.unassignedTickets)}">0</span>
+          </div>
+          <div class="p-0">
+            <table class="w-full text-left text-sm text-gray-600 dark:text-slate-400">
+              <thead class="bg-gray-50 dark:bg-slate-900/50 text-gray-500 dark:text-slate-500 uppercase font-medium">
+                <tr>
+                  <th class="px-6 py-3">ID</th>
+                  <th class="px-6 py-3">Summary</th>
+                  <th class="px-6 py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+                <tr th:each="ticket : ${dashboard.unassignedTickets}" class="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition">
+                  <td class="px-6 py-4 font-mono text-amber-600 dark:text-amber-400" th:text="${ticket.ticketId}">TKT-123</td>
+                  <td class="px-6 py-4 text-gray-900 dark:text-slate-200" th:text="${ticket.summary}">Fix the thing</td>
+                  <td class="px-6 py-4">
+                    <a href="#" class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300">Claim</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Sidebar Column: Team -->
+      <div class="space-y-8">
+        <div class="bg-white dark:bg-slate-800 p-6 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm dark:shadow-none transition-colors duration-200">
+          <h3 class="text-lg font-medium mb-4 text-gray-800 dark:text-slate-200">Team Directory</h3>
+          <ul class="space-y-3">
+            <li th:each="member : ${dashboard.teamMembers}" class="flex items-center justify-between p-2 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded transition">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-900 flex items-center justify-center dark:text-teal-300 font-bold text-xs"
+                     th:text="${#strings.substring(member.firstName,0,1) + #strings.substring(member.lastName,0,1)}">JD</div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900 dark:text-slate-200" th:text="${member.firstName} + ' ' + ${member.lastName}">John Doe</p>
+                  <p class="text-xs text-gray-500 dark:text-slate-500" th:text="${member.userRole}">ASSOCIATE</p>
+                </div>
+              </div>
+              <div th:if="${member.active}" class="w-2 h-2 rounded-full bg-green-500"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   </main>
 </div>
+
+<script>
+    var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+    // Change the icons inside the button based on previous settings
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        themeToggleLightIcon.classList.remove('hidden');
+    } else {
+        themeToggleDarkIcon.classList.remove('hidden');
+    }
+
+    var themeToggleBtn = document.getElementById('theme-toggle');
+
+    themeToggleBtn.addEventListener('click', function() {
+
+        // toggle icons inside button
+        themeToggleDarkIcon.classList.toggle('hidden');
+        themeToggleLightIcon.classList.toggle('hidden');
+
+        // if set via local storage previously
+        if (localStorage.getItem('theme')) {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+
+        // if NOT set via local storage previously
+        } else {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+    });
+</script>
 </body>
 </html>

@@ -30,7 +30,15 @@
             font-size: 2rem;
             font-weight: bold;
             text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .tenant-badge {
+            text-align: center;
+            color: #64748B;
+            font-size: 0.875rem;
             margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         .form-group { margin-bottom: 1rem; }
         label { display: block; margin-bottom: 0.5rem; color: var(--dark-slate); }
@@ -60,14 +68,22 @@
 <div class="login-card">
     <div class="brand">Dispatch</div>
 
+    <!-- Show tenant ID if present -->
+    <div th:if="${tenantId}" class="tenant-badge">
+        Sign in to <span th:text="${tenantId}">Tenant</span>
+    </div>
+
     <div th:if="${param.error}" class="error">
         Invalid username or password.
     </div>
 
-    <form th:action="@{/login}" method="post">
+    <form id="loginForm" th:action="@{/login}" method="post">
+        <!-- Hidden field to store the tenant ID -->
+        <input type="hidden" id="tenantId" th:value="${tenantId}" />
+
         <div class="form-group">
             <label>Username</label>
-            <input type="text" name="username" required autofocus />
+            <input type="text" id="username" name="username" required autofocus />
         </div>
         <div class="form-group">
             <label>Password</label>
@@ -76,5 +92,17 @@
         <button type="submit">Sign In</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const tenantId = document.getElementById('tenantId').value;
+        const usernameInput = document.getElementById('username');
+
+        if (tenantId && usernameInput.value && !usernameInput.value.includes('@')) {
+            // Append the tenant ID to the username before submitting
+            usernameInput.value = usernameInput.value + '@' + tenantId;
+        }
+    });
+</script>
 </body>
 </html>
