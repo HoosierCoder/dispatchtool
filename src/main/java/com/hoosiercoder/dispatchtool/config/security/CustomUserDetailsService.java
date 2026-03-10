@@ -47,7 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             // System-level user (e.g., SYSTEM_ADMIN)
             logger.info("Parsed system user. Username: {}", username);
             userOptional = userRepository.findByUsername(username);
-            tenantIdForContext = TenantContext.SYSTEM_TENANT; // Set special context for system user
+            tenantIdForContext = TenantContext.SYSTEM_TENANT;
         }
 
         User user = userOptional.orElseThrow(() -> {
@@ -55,21 +55,25 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new UsernameNotFoundException("User not found: " + username);
         });
 
-        // Set the context for the rest of the request
+        // Set the context for the rest of the request (useful for the initial login request)
         TenantContext.setTenantId(tenantIdForContext);
         logger.info("User found: {}. Setting TenantContext to: {}", user.getUsername(), tenantIdForContext);
 
         // Spring expects roles to be prefixed with "ROLE_"
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name());
 
-        return new org.springframework.security.core.userdetails.User(
+        // Return our custom UserDetails containing the tenantId
+        return new DispatchUserDetails(
                 user.getUsername(),
                 user.getHashedPassword(),
                 user.isActive(),
                 true,
                 true,
                 true,
-                Collections.singletonList(authority)
+                Collections.singletonList(authority),
+                tenantIdForContext,
+                user.getFirstName(),
+                user.getLastName()
         );
     }
 }

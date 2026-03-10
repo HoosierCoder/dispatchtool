@@ -85,6 +85,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDTO> getByUsername(String username) {
         String tenantId = TenantContext.getTenantId();
+        
+        if (TenantContext.SYSTEM_TENANT.equals(tenantId)) {
+            return userRepository.findByUsername(username)
+                    .map(userMapper::userToUserDto);
+        }
+
         return userRepository.findByTenantIdAndUsername(tenantId, username)
                 .map(userMapper::userToUserDto);
     }
