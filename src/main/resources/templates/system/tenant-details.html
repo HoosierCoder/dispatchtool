@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Dispatch | Tenant Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans">
+
+<div class="flex h-screen">
+    <aside class="w-64 bg-slate-800 border-r border-teal-900/50 p-6">
+        <h1 class="text-2xl font-bold text-teal-400 mb-8">Dispatch</h1>
+        <nav class="space-y-4">
+            <a th:href="@{/system/dashboard}" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Platform Overview</a>
+            <a th:href="@{/system/tenants}" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Tenant Management</a>
+            <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">System Logs</a>
+        </nav>
+        <div class="mt-auto pt-8 border-t border-slate-700">
+            <p class="text-xs text-teal-500 uppercase font-bold tracking-widest mb-1">Hoosier Coder</p>
+            <p class="text-sm text-slate-400" sec:authentication="name">Username</p>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="text-xs text-teal-500 hover:underline">Sign Out</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="mb-10 flex justify-between items-center">
+            <div>
+                <h2 class="text-3xl font-semibold" th:text="${tenant.companyName}">Tenant Company Name</h2>
+                <p class="text-slate-400 font-mono" th:text="${tenant.tenantId}">tenant-id</p>
+            </div>
+            <div>
+                <a th:href="@{/system/tenants/edit/{id}(id=${tenant.tenantId})}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-800">
+                    Edit Tenant
+                </a>
+            </div>
+        </header>
+
+        <div class="bg-slate-800 rounded-lg border border-slate-700 p-6">
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-8">
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-slate-400">Primary Contact</dt>
+                    <dd class="mt-1 text-sm text-slate-200" th:text="${tenant.primaryContactName}"></dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-slate-400">Primary Email</dt>
+                    <dd class="mt-1 text-sm text-slate-200" th:text="${tenant.primaryContactEmail}"></dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-slate-400">Phone Number</dt>
+                    <dd class="mt-1 text-sm text-slate-200" th:text="${tenant.phoneNumber}"></dd>
+                </div>
+                <div class="sm:col-span-1">
+                    <dt class="text-sm font-medium text-slate-400">Account Status</dt>
+                    <dd class="mt-1 text-sm text-slate-200" th:text="${tenant.accountStatus}"></dd>
+                </div>
+                 <div class="sm:col-span-2">
+                    <dt class="text-sm font-medium text-slate-400">Billing Address</dt>
+                    <dd class="mt-1 text-sm text-slate-200" th:text="${tenant.billingStreet + ', ' + tenant.billingCity + ', ' + tenant.billingState + ' ' + tenant.billingZip}"></dd>
+                </div>
+            </dl>
+        </div>
+
+        <!-- Deactivate/Activate Form -->
+        <div class="mt-8">
+            <form th:action="@{/system/tenants/toggle-status/{id}(id=${tenant.tenantId})}" method="post">
+                <button type="submit"
+                        th:classappend="${tenant.active} ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'"
+                        class="inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800">
+                    <span th:if="${tenant.active}">Deactivate Tenant</span>
+                    <span th:unless="${tenant.active}">Activate Tenant</span>
+                </button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

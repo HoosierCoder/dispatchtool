@@ -7,22 +7,35 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans">
 
-<div class="flex h-screen">
-  <aside class="w-64 bg-slate-800 border-r border-teal-900/50 p-6">
-    <h1 class="text-2xl font-bold text-teal-400 mb-8">Dispatch <span class="text-xs align-top font-normal text-slate-500">PRO</span></h1>
-    <nav class="space-y-4">
-      <a href="#" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Platform Overview</a>
-      <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Tenant Management</a>
-      <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">System Logs</a>
-    </nav>
-    <div class="mt-auto pt-8 border-t border-slate-700">
-      <p class="text-xs text-teal-500 uppercase font-bold tracking-widest mb-1" th:text="${branchName}">Branch Name</p>
-      <p class="text-sm text-slate-400" sec:authentication="name">Username</p>
-      <form th:action="@{/logout}" method="post">
-        <button type="submit" class="text-xs text-teal-500 hover:underline">Sign Out</button>
-      </form>
+<div class="relative min-h-screen md:flex">
+    <!-- Mobile Menu Button -->
+    <div class="bg-slate-800 text-gray-100 flex justify-between md:hidden">
+        <a href="#" class="block p-4 text-white font-bold">Dispatch</a>
+        <button id="mobile-menu-button" class="p-4 focus:outline-none focus:bg-slate-700">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
     </div>
-  </aside>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-slate-800 text-slate-100 w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
+        <a href="#" class="text-white flex items-center space-x-2 px-4">
+            <h1 class="text-2xl font-bold text-teal-400">Dispatch <span class="text-xs align-top font-normal text-slate-500">PRO</span></h1>
+        </a>
+        <nav class="space-y-4">
+            <a th:href="@{/system/dashboard}" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Platform Overview</a>
+            <a th:href="@{/system/tenants}" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Tenant Management</a>
+            <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">System Logs</a>
+        </nav>
+        <div class="mt-auto pt-8 border-t border-slate-700">
+            <p class="text-xs text-teal-500 uppercase font-bold tracking-widest mb-1" th:text="${branchName}">Branch Name</p>
+            <p class="text-sm text-slate-400" sec:authentication="name">Username</p>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="text-xs text-teal-500 hover:underline">Sign Out</button>
+            </form>
+        </div>
+    </aside>
 
   <main class="flex-1 p-10 overflow-y-auto">
     <header class="mb-10">
@@ -46,5 +59,15 @@
     </div>
   </main>
 </div>
+
+<script>
+    const btn = document.getElementById('mobile-menu-button');
+    const sidebar = document.getElementById('sidebar');
+
+    btn.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+    });
+</script>
+
 </body>
 </html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Dispatch | Tenant Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans">
+
+<div class="relative min-h-screen md:flex">
+    <!-- Mobile Menu Button -->
+    <div class="bg-slate-800 text-gray-100 flex justify-between md:hidden">
+        <a href="#" class="block p-4 text-white font-bold">Dispatch</a>
+        <button id="mobile-menu-button" class="p-4 focus:outline-none focus:bg-slate-700">
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-slate-800 text-slate-100 w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out">
+        <a href="#" class="text-white flex items-center space-x-2 px-4">
+            <h1 class="text-2xl font-bold text-teal-400">Dispatch</h1>
+        </a>
+        <nav class="space-y-4">
+            <a th:href="@{/system/dashboard}" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Platform Overview</a>
+            <a th:href="@{/system/tenants}" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Tenant Management</a>
+            <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">System Logs</a>
+        </nav>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="mb-10 flex justify-between items-center">
+            <div>
+                <h2 class="text-3xl font-semibold">Tenant Management</h2>
+                <p class="text-slate-400">Onboard, configure, and manage all client tenants.</p>
+            </div>
+            <div>
+                <a th:href="@{/system/tenants/new}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-800">
+                    Add New Tenant
+                </a>
+            </div>
+        </header>
+
+        <div class="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-700">
+                <thead class="bg-slate-900/50">
+                <tr>
+                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-300 sm:pl-6">Company Name</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-300">Tenant ID</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-300">Status</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-300">Primary Contact</th>
+                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                        <span class="sr-only">Actions</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-800">
+                <tr th:each="tenant : ${tenants}" class="hover:bg-slate-700/50">
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-white sm:pl-6">
+                        <a th:href="@{/system/tenants/{id}(id=${tenant.tenantId})}" class="hover:text-teal-400" th:text="${tenant.companyName}">Tenant Inc.</a>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-400 font-mono" th:text="${tenant.tenantId}">tenant-inc</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-400">
+                        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                              th:classappend="${tenant.active ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}"
+                              th:text="${tenant.active ? 'Active' : 'Inactive'}">Active</span>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-400" th:text="${tenant.primaryContactName}">John Doe</td>
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <!-- Actions can go here in the future, like a quick deactivate -->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<script>
+    const btn = document.getElementById('mobile-menu-button');
+    const sidebar = document.getElementById('sidebar');
+
+    btn.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+    });
+</script>
+
+</body>
+</html>
