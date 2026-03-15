@@ -23,7 +23,17 @@ public class TenantDTO {
     @NotBlank(message = "Primary email is required")
     private String primaryContactEmail;
 
+    private String secondaryContactName;
+    private String secondaryContactEmail;
+
     private String phoneNumber;
+    
+    // Billing fields
+    private String billingStreet;
+    private String billingCity;
+    private String billingState;
+    private String billingZip;
+
     private String accountStatus;
     private boolean active;
     private LocalDateTime createdAt;
@@ -60,12 +70,60 @@ public class TenantDTO {
         this.primaryContactEmail = primaryContactEmail;
     }
 
+    public String getSecondaryContactName() {
+        return secondaryContactName;
+    }
+
+    public void setSecondaryContactName(String secondaryContactName) {
+        this.secondaryContactName = secondaryContactName;
+    }
+
+    public String getSecondaryContactEmail() {
+        return secondaryContactEmail;
+    }
+
+    public void setSecondaryContactEmail(String secondaryContactEmail) {
+        this.secondaryContactEmail = secondaryContactEmail;
+    }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getBillingStreet() {
+        return billingStreet;
+    }
+
+    public void setBillingStreet(String billingStreet) {
+        this.billingStreet = billingStreet;
+    }
+
+    public String getBillingCity() {
+        return billingCity;
+    }
+
+    public void setBillingCity(String billingCity) {
+        this.billingCity = billingCity;
+    }
+
+    public String getBillingState() {
+        return billingState;
+    }
+
+    public void setBillingState(String billingState) {
+        this.billingState = billingState;
+    }
+
+    public String getBillingZip() {
+        return billingZip;
+    }
+
+    public void setBillingZip(String billingZip) {
+        this.billingZip = billingZip;
     }
 
     public String getAccountStatus() {
@@ -82,5 +140,13 @@ public class TenantDTO {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

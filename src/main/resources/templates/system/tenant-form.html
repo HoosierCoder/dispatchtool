@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dispatch | Tenant Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans">
+
+<div class="flex h-screen">
+    <aside class="w-64 bg-slate-800 border-r border-teal-900/50 p-6">
+        <h1 class="text-2xl font-bold text-teal-400 mb-8">Dispatch</h1>
+        <nav class="space-y-4">
+            <a th:href="@{/system/dashboard}" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">Platform Overview</a>
+            <a th:href="@{/system/tenants}" class="block py-2.5 px-4 rounded bg-teal-600/20 text-teal-300">Tenant Management</a>
+            <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-700 transition">System Logs</a>
+        </nav>
+        <div class="mt-auto pt-8 border-t border-slate-700">
+            <p class="text-xs text-teal-500 uppercase font-bold tracking-widest mb-1">Hoosier Coder</p>
+            <p class="text-sm text-slate-400" sec:authentication="name">Username</p>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="text-xs text-teal-500 hover:underline">Sign Out</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-10 overflow-y-auto">
+        <header class="mb-10">
+            <h2 class="text-3xl font-semibold" th:text="${tenant.tenantId == null ? 'Create New Tenant' : 'Edit Tenant'}">Create New Tenant</h2>
+            <p class="text-slate-400" th:text="${tenant.tenantId == null ? 'Fill in the details for the new tenant account.' : 'Update the details for ' + tenant.companyName}"></p>
+        </header>
+
+        <form th:object="${tenant}" th:action="${tenant.tenantId == null} ? @{/system/tenants/new} : @{/system/tenants/edit/{id}(id=${tenant.tenantId})}" method="post" class="space-y-6">
+
+            <div th:if="${tenant.tenantId != null}">
+                 <label class="block text-sm font-medium text-slate-300">Tenant ID</label>
+                 <input type="text" th:field="*{tenantId}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm sm:text-sm bg-slate-800 text-slate-400" readonly>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-slate-300">Company Name</label>
+                    <input type="text" id="companyName" th:field="*{companyName}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200" required>
+                </div>
+                <div>
+                    <label for="primaryContactName" class="block text-sm font-medium text-slate-300">Primary Contact Name</label>
+                    <input type="text" id="primaryContactName" th:field="*{primaryContactName}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200" required>
+                </div>
+                <div>
+                    <label for="primaryContactEmail" class="block text-sm font-medium text-slate-300">Primary Contact Email</label>
+                    <input type="email" id="primaryContactEmail" th:field="*{primaryContactEmail}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200" required>
+                </div>
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-slate-300">Phone Number</label>
+                    <input type="tel" id="phoneNumber" th:field="*{phoneNumber}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+                <div>
+                    <label for="secondaryContactName" class="block text-sm font-medium text-slate-300">Secondary Contact Name (Optional)</label>
+                    <input type="text" id="secondaryContactName" th:field="*{secondaryContactName}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+                <div>
+                    <label for="secondaryContactEmail" class="block text-sm font-medium text-slate-300">Secondary Contact Email (Optional)</label>
+                    <input type="email" id="secondaryContactEmail" th:field="*{secondaryContactEmail}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div>
+                    <label for="billingStreet" class="block text-sm font-medium text-slate-300">Billing Street</label>
+                    <input type="text" id="billingStreet" th:field="*{billingStreet}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+                <div>
+                    <label for="billingCity" class="block text-sm font-medium text-slate-300">Billing City</label>
+                    <input type="text" id="billingCity" th:field="*{billingCity}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+                <div>
+                    <label for="billingState" class="block text-sm font-medium text-slate-300">Billing State</label>
+                    <input type="text" id="billingState" th:field="*{billingState}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+                <div>
+                    <label for="billingZip" class="block text-sm font-medium text-slate-300">Billing Zip</label>
+                    <input type="text" id="billingZip" th:field="*{billingZip}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                </div>
+            </div>
+
+            <div>
+                <label for="accountStatus" class="block text-sm font-medium text-slate-300">Account Status</label>
+                <select id="accountStatus" th:field="*{accountStatus}" class="mt-1 block w-full rounded-md border-gray-600 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm bg-slate-700 text-slate-200">
+                    <option value="TRIAL">Trial</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="SUSPENDED">Suspended</option>
+                    <option value="CLOSED">Closed</option>
+                </select>
+            </div>
+
+            <div class="flex items-start">
+                <div class="flex items-center h-5">
+                    <input id="active" type="checkbox" th:field="*{active}" class="focus:ring-teal-500 h-4 w-4 text-teal-600 border-gray-600 rounded bg-slate-700 checked:bg-teal-600 checked:border-teal-600">
+                </div>
+                <div class="ml-3 text-sm">
+                    <label for="active" class="font-medium text-slate-300">Active</label>
+                    <p class="text-gray-500 dark:text-slate-500">Whether this tenant account is currently active.</p>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">Save Changes</button>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>
