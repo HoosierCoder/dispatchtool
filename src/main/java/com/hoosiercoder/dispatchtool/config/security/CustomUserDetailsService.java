@@ -55,14 +55,14 @@ public class CustomUserDetailsService implements UserDetailsService {
             return new UsernameNotFoundException("User not found: " + username);
         });
 
-        // Set the context for the rest of the request (useful for the initial login request)
+        // Set the context for the rest of the request
         TenantContext.setTenantId(tenantIdForContext);
-        logger.info("User found: {}. Setting TenantContext to: {}", user.getUsername(), tenantIdForContext);
+
+        logger.info("User found: {}. Role: {}. Storing TenantContext: '{}'", user.getUsername(), user.getUserRole(), tenantIdForContext);
 
         // Spring expects roles to be prefixed with "ROLE_"
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name());
 
-        // Return our custom UserDetails containing the tenantId
         return new DispatchUserDetails(
                 user.getUsername(),
                 user.getHashedPassword(),
@@ -71,7 +71,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 true,
                 true,
                 Collections.singletonList(authority),
-                tenantIdForContext,
+                tenantIdForContext, // Passing the tenant ID here
                 user.getFirstName(),
                 user.getLastName()
         );

@@ -59,6 +59,12 @@
         <h2 class="text-3xl font-semibold text-gray-800 dark:text-gray-100">Dashboard</h2>
         <p class="text-gray-500 dark:text-slate-400">Welcome back, <span th:text="${user.firstName}">User</span>.</p>
       </div>
+        <!-- New Ticket Button -->
+        <div>
+            <a th:href="@{/tickets/new}" class="inline-flex items-center justify-center rounded-md border border-transparent bg-teal-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+                New Ticket
+            </a>
+        </div>
     </header>
 
     <!-- Stats Row (Managers Only) -->

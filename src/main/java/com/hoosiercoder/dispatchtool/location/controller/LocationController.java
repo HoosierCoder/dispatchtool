@@ -8,13 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Author: HoosierCoder
  *
  */
 @RestController
-@RequestMapping("/api/v1/locations")
+@RequestMapping("/api/v1/{tenantId}/locations")
 public class LocationController {
     private final LocationService locationService;
 
@@ -23,15 +24,13 @@ public class LocationController {
     }
 
     @PostMapping
-    public ResponseEntity<LocationDTO> createLocation(@Valid @RequestBody LocationDTO locationDto) {
-        // ID is usually null for new creations; the service handles tenant assignment
+    public ResponseEntity<LocationDTO> createLocation(@PathVariable String tenantId, @Valid @RequestBody LocationDTO locationDto) {
         LocationDTO createdLocation = locationService.createLocation(locationDto);
         return new ResponseEntity<>(createdLocation, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> listLocations() {
-        // Changed from getAllLocations to listLocations for consistency
+    public ResponseEntity<List<LocationDTO>> listLocations(@PathVariable String tenantId) {
         List<LocationDTO> locations = locationService.listLocations();
 
         if (locations.isEmpty()) {
@@ -42,8 +41,10 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LocationDTO> getLocationById(@PathVariable Long id) {
-        // Service handles the tenant-scoping safety check
-        return ResponseEntity.ok(locationService.getLocationById(id));
+    public ResponseEntity<LocationDTO> getLocationById(@PathVariable String tenantId, @PathVariable Long id) {
+        Optional<LocationDTO> location = locationService.getLocationById(id);
+        
+        return location.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
