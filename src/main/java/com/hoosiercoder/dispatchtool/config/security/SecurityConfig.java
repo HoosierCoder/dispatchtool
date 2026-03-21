@@ -35,6 +35,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Disable CSRF for API endpoints as they are stateless/Basic Auth
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
                         // 1. Allow static resources for everyone
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
@@ -43,10 +45,9 @@ public class SecurityConfig {
                         .requestMatchers("/system/**").hasRole("SYSTEM_ADMIN")
 
                         // 3. REST API routes - Allow SYSTEM_ADMIN and Tenant ADMINs
-                        .requestMatchers("/api/**").hasAnyRole("SYSTEM_ADMIN", "ADMIN")
+                        .requestMatchers("/api/v1/{tenantId}/**").hasAnyRole("SYSTEM_ADMIN", "ADMIN")
 
                         // 4. Tenant-level routes
-                        // We allow SYSTEM_ADMIN here so you can impersonate or troubleshoot
                         .requestMatchers("/tenant/**").hasAnyRole("SYSTEM_ADMIN", "ADMIN", "MANAGER", "LEAD", "ASSOCIATE")
 
                         // 5. Everything else requires a login

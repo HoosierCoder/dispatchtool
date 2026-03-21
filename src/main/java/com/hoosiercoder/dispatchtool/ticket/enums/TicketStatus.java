@@ -5,6 +5,7 @@ public enum TicketStatus {
     ASSIGNED("Assigned"),
     DISPATCHED("Dispatched"),
     IN_PROGRESS("In Progress"),
+    RESOLVED("Resolved"),
     CLOSED("Closed"),
     CANCELLED("Cancelled");
 
