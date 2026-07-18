@@ -4,10 +4,13 @@ import com.hoosiercoder.dispatchtool.customer.dto.CustomerDTO;
 import com.hoosiercoder.dispatchtool.customer.entity.Customer;
 import com.hoosiercoder.dispatchtool.location.mapper.LocationMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {LocationMapper.class})
 public interface CustomerMapper {
     CustomerDTO customerToCustomerDto(Customer customer);
 
+    @Mapping(target = "tenantId", ignore = true) // Set by service layer
+    @Mapping(target = "tickets", ignore = true) // Managed by service layer/ORM
     Customer customerDtoToCustomer(CustomerDTO customerDto);
 }

@@ -55,4 +55,29 @@ public class LocationServiceImpl implements LocationService {
         return locationRepository.findByTenantIdAndId(tenantId, id)
                 .map(locationMapper::locationToLocationDto);
     }
+
+    @Override
+    public LocationDTO updateLocation(Long id, LocationDTO locationDto) {
+        String tenantId = TenantContext.getTenantId();
+        Location existingLocation = locationRepository.findByTenantIdAndId(tenantId, id)
+                .orElseThrow(() -> new RuntimeException("Location not found"));
+
+        Location updatedLocation = locationMapper.locationDtoToLocation(locationDto);
+        updatedLocation.setId(existingLocation.getId()); // preserve ID
+        updatedLocation.setTenantId(tenantId); // preserve Tenant
+
+        Location saved = locationRepository.save(updatedLocation);
+        return locationMapper.locationToLocationDto(saved);
+    }
+
+    @Override
+    public void deleteLocation(Long id) {
+        String tenantId = TenantContext.getTenantId();
+        // Verify the location belongs to the current tenant before deleting
+        locationRepository.findByTenantIdAndId(tenantId, id)
+                .ifPresentOrElse(
+                    location -> locationRepository.deleteById(id),
+                    () -> { throw new RuntimeException("Location not found or access denied."); }
+                );
+    }
 }

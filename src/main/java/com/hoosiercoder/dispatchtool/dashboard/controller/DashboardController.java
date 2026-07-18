@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable; // Import PathVariable
 
 import java.security.Principal;
 
@@ -35,9 +36,9 @@ public class DashboardController {
         this.tenantRepository = tenantRepository;
     }
 
-    @GetMapping("/tenant/dashboard")
+    @GetMapping("/tenant/{tenantId}/dashboard") // Updated to include {tenantId}
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'ADMIN', 'MANAGER', 'LEAD', 'ASSOCIATE')")
-    public String tenantDashboard(Model model, Principal principal) {
+    public String tenantDashboard(@PathVariable String tenantId, Model model, Principal principal) { // Added @PathVariable
         UserDTO userDto = userService.getByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 

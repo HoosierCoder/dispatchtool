@@ -11,6 +11,10 @@ public class UserDTO {
 
     private Long userId;
 
+    @NotBlank(message = "Username cannot be empty") // Added validation for username
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username; // Added username field
+
     @NotBlank(message = "Firstname cannot be empty")
     @Size(min = 2, max = 20, message = "Firstname must be between 2 and 20 characters")
     private String firstName;
@@ -23,13 +27,16 @@ public class UserDTO {
 
     private boolean isActive;
 
+    private String tenantId;
     private String tenantName;
 
-    public UserDTO(String firstName, String lastName, UserRole userRole, boolean isActive) {
+    public UserDTO(String username, String firstName, String lastName, UserRole userRole, boolean isActive, String tenantId) {
+        this.username = username; // Initialize username
         this.firstName = firstName;
         this.lastName = lastName;
         this.userRole = userRole;
         this.isActive = isActive;
+        this.tenantId = tenantId;
     }
 
     public UserDTO() {
@@ -41,6 +48,14 @@ public class UserDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {
@@ -75,6 +90,14 @@ public class UserDTO {
         isActive = active;
     }
 
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
     public String getTenantName() {
         return tenantName;
     }
@@ -87,9 +110,11 @@ public class UserDTO {
     public String toString() {
         return "UserDTO{" +
                 "userId=" + userId +
+                ", username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", userRole=" + userRole +
+                ", tenantId='" + tenantId + '\'' +
                 '}';
     }
 }

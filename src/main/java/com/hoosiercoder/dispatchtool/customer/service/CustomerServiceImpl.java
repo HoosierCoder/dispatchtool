@@ -72,4 +72,15 @@ public class CustomerServiceImpl implements CustomerService {
         Customer saved = customerRepository.save(updatedCustomer);
         return customerMapper.customerToCustomerDto(saved);
     }
+
+    @Override
+    public void deleteCustomer(Long id) {
+        String tenantId = TenantContext.getTenantId();
+        // Verify the customer belongs to the current tenant before deleting
+        customerRepository.findByTenantIdAndId(tenantId, id)
+                .ifPresentOrElse(
+                    customer -> customerRepository.deleteById(id),
+                    () -> { throw new RuntimeException("Customer not found or access denied."); }
+                );
+    }
 }

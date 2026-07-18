@@ -6,7 +6,6 @@ import com.hoosiercoder.dispatchtool.location.entity.Location;
 import com.hoosiercoder.dispatchtool.location.mapper.LocationMapper;
 import com.hoosiercoder.dispatchtool.location.repository.LocationRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,10 +58,11 @@ public class LocationServiceImplTest {
         when(locationMapper.locationToLocationDto(location)).thenReturn(dto);
 
         // Act
-        LocationDTO result = locationService.getLocationById(locationId);
+        Optional<LocationDTO> result = locationService.getLocationById(locationId);
 
         // Assert
-        assertEquals(locationId, result.getId());
+        assertTrue(result.isPresent());
+        assertEquals(locationId, result.get().getId());
         verify(locationRepository).findByTenantIdAndId(tenantId, locationId);
     }
 }
