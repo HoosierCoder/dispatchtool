@@ -10,4 +10,6 @@ public interface LocationService {
     LocationDTO createLocation(LocationDTO locationDto);
     List<LocationDTO> listLocations();
     Optional<LocationDTO> getLocationById(Long id);
+    LocationDTO updateLocation(Long id, LocationDTO locationDto);
+    void deleteLocation(Long id);
 }

@@ -25,12 +25,30 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
-        if (roles.contains("ROLE_SYSTEM_ADMIN")) {
-            response.sendRedirect("/system/dashboard");
-        } else if (roles.contains("ROLE_ADMIN")) {
-            response.sendRedirect("/tenant/dashboard");
+        String targetUrl = "/"; // Default fallback
+
+        if (authentication.getPrincipal() instanceof DispatchUserDetails) {
+            DispatchUserDetails userDetails = (DispatchUserDetails) authentication.getPrincipal();
+            String tenantId = userDetails.getTenantId();
+
+            if (roles.contains("ROLE_SYSTEM_ADMIN")) {
+                targetUrl = "/system/dashboard"; // System admin has a different dashboard
+            } else if (tenantId != null && !tenantId.isEmpty()) {
+                // For tenant users, redirect to their tenant-specific dashboard
+                targetUrl = "/tenant/" + tenantId + "/dashboard";
+            } else {
+                // Fallback for authenticated users without a clear tenantId (shouldn't happen for tenant users)
+                targetUrl = "/";
+            }
         } else {
-            response.sendRedirect("/");
+            // Handle cases where principal is not DispatchUserDetails (e.g., anonymous, or other custom types)
+            if (roles.contains("ROLE_SYSTEM_ADMIN")) {
+                targetUrl = "/system/dashboard";
+            } else {
+                targetUrl = "/"; // Generic redirect
+            }
         }
+
+        response.sendRedirect(targetUrl);
     }
 }

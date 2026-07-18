@@ -49,7 +49,7 @@ public class TicketControllerTest {
         when(ticketService.listTickets()).thenReturn(List.of(ticket));
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/ticket")
+        mockMvc.perform(get("/api/v1/test-tenant/ticket")
                         .header("X-Tenant-ID", "test-tenant"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -62,7 +62,7 @@ public class TicketControllerTest {
         when(ticketService.listTickets()).thenReturn(Collections.emptyList());
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/ticket")
+        mockMvc.perform(get("/api/v1/test-tenant/ticket")
                         .header("X-Tenant-ID", "test-tenant"))
                 .andExpect(status().isNoContent());
     }
@@ -82,7 +82,7 @@ public class TicketControllerTest {
         when(ticketService.saveNewTicket(any(TicketDTO.class))).thenReturn(createdTicket);
 
         // Act & Assert
-        mockMvc.perform(post("/api/v1/ticket")
+        mockMvc.perform(post("/api/v1/test-tenant/ticket")
                 .with(csrf())
                 .header("X-Tenant-ID", "test-tenant")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +103,7 @@ public class TicketControllerTest {
         when(ticketService.getByTicketId(ticketId)).thenReturn(Optional.of(ticket));
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/ticket/{id}", ticketId)
+        mockMvc.perform(get("/api/v1/test-tenant/ticket/{id}", ticketId)
                         .header("X-Tenant-ID", "test-tenant"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ticketId", is(ticketId)));
@@ -116,7 +116,7 @@ public class TicketControllerTest {
         when(ticketService.getByTicketId(ticketId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        mockMvc.perform(get("/api/v1/ticket/{id}", ticketId)
+        mockMvc.perform(get("/api/v1/test-tenant/ticket/{id}", ticketId)
                         .header("X-Tenant-ID", "test-tenant"))
                 .andExpect(status().isNotFound());
     }

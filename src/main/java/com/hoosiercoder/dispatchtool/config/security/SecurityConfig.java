@@ -3,13 +3,15 @@ package com.hoosiercoder.dispatchtool.config.security;
 import com.hoosiercoder.dispatchtool.config.filter.TenantFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // Import this
 
 /**
  * Author: HoosierCoder
@@ -21,10 +23,15 @@ public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler successHandler;
     private final TenantFilter tenantFilter;
+    private final TenantAuthenticationDetailsSource tenantAuthenticationDetailsSource;
+    // Removed CustomUserDetailsService and PasswordEncoder from constructor injection
 
-    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler, TenantFilter tenantFilter) {
+    // Adjusted constructor to remove CustomUserDetailsService and PasswordEncoder
+    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler, TenantFilter tenantFilter,
+                          TenantAuthenticationDetailsSource tenantAuthenticationDetailsSource) {
         this.successHandler = successHandler;
         this.tenantFilter = tenantFilter;
+        this.tenantAuthenticationDetailsSource = tenantAuthenticationDetailsSource;
     }
 
     @Bean
@@ -32,9 +39,27 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // Define TenantAuthenticationProvider as a Bean here, accepting its dependencies as method parameters
+    @Bean
+    public TenantAuthenticationProvider tenantAuthenticationProvider(CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) {
+        return new TenantAuthenticationProvider(customUserDetailsService, passwordEncoder);
+    }
+
+    // Configure the AuthenticationManager to use our custom provider
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http, TenantAuthenticationProvider tenantAuthenticationProvider) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        // Use the already created tenantAuthenticationProvider bean
+        authenticationManagerBuilder.authenticationProvider(tenantAuthenticationProvider);
+        return authenticationManagerBuilder.build();
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Add the TenantFilter BEFORE the UsernamePasswordAuthenticationFilter
+                .addFilterBefore(tenantFilter, UsernamePasswordAuthenticationFilter.class)
                 // Disable CSRF for API endpoints as they are stateless/Basic Auth
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .authorizeHttpRequests(auth -> auth
@@ -55,6 +80,8 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        // Use our custom TenantAuthenticationDetailsSource
+                        .authenticationDetailsSource(tenantAuthenticationDetailsSource)
                         .successHandler(successHandler)
                         .permitAll()
                 )
@@ -63,9 +90,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 // Enable HTTP Basic Authentication for API clients (like Postman)
-                .httpBasic(Customizer.withDefaults())
-                // Add the TenantFilter after the SecurityContext is established
-                .addFilterAfter(tenantFilter, AnonymousAuthenticationFilter.class);
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

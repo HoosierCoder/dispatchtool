@@ -3,7 +3,8 @@ package com.hoosiercoder.dispatchtool.context;
 public class TenantContext {
 
     public static final String SYSTEM_TENANT = "SYSTEM";
-    private static final ThreadLocal<String> currentTenant = new ThreadLocal<>();
+    // Change to InheritableThreadLocal to propagate context to child threads
+    private static final InheritableThreadLocal<String> currentTenant = new InheritableThreadLocal<>();
 
     public static String getTenantId() {
         return currentTenant.get();

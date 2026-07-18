@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -66,7 +67,7 @@ public class CustomerServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenAccessingCustomerOfDifferentTenant() {
+    void shouldReturnEmptyWhenAccessingCustomerOfDifferentTenant() {
         // Arrange
         String attackerTenant = "malicious-corp";
         String victimTenant = "seattle-dispatch-hub";
@@ -80,12 +81,11 @@ public class CustomerServiceImplTest {
         when(customerRepository.findByTenantIdAndId(attackerTenant, targetCustomerId))
                 .thenReturn(Optional.empty());
 
-        // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            customerService.getCustomerById(targetCustomerId);
-        });
+        // Act
+        Optional<CustomerDTO> result = customerService.getCustomerById(targetCustomerId);
 
-        assertTrue(exception.getMessage().contains("access denied"));
+        // Assert
+        assertTrue(result.isEmpty());
         verify(customerRepository).findByTenantIdAndId(attackerTenant, targetCustomerId);
         verifyNoInteractions(customerMapper); // Should never even try to map the data
     }
