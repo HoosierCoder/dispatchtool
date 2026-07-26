@@ -38,7 +38,9 @@ public class TicketWebController {
         List<TicketDTO> tickets = ticketService.listTickets(); // Assuming this lists tickets for the current tenant
         model.addAttribute("tickets", tickets);
         model.addAttribute("tenantId", tenantId);
-        return "ticket/list"; // We'll create this template next
+        model.addAttribute("pageTitle", "Tickets"); // Set page title for layout
+        model.addAttribute("content", "ticket/list"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @GetMapping("/new")
@@ -57,7 +59,9 @@ public class TicketWebController {
         model.addAttribute("customers", customers);
         model.addAttribute("locations", locations);
         model.addAttribute("tenantId", tenantId); // Pass tenantId to the form
-        return "ticket/ticket-form";
+        model.addAttribute("pageTitle", "Create Ticket"); // Set page title for layout
+        model.addAttribute("content", "ticket/ticket-form"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @PostMapping("/new")
