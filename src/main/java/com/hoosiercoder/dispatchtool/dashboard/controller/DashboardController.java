@@ -36,9 +36,9 @@ public class DashboardController {
         this.tenantRepository = tenantRepository;
     }
 
-    @GetMapping("/tenant/{tenantId}/dashboard") // Updated to include {tenantId}
+    @GetMapping("/tenant/{tenantId}/dashboard")
     @PreAuthorize("hasAnyRole('SYSTEM_ADMIN', 'ADMIN', 'MANAGER', 'LEAD', 'ASSOCIATE')")
-    public String tenantDashboard(@PathVariable String tenantId, Model model, Principal principal) { // Added @PathVariable
+    public String tenantDashboard(@PathVariable String tenantId, Model model, Principal principal) {
         UserDTO userDto = userService.getByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -54,10 +54,12 @@ public class DashboardController {
         DashboardDTO dashboardData = dashboardService.getDashboardData(userEntity);
 
         model.addAttribute("user", userDto);
-        model.addAttribute("branchName", userDto.getTenantName());
+        // model.addAttribute("branchName", userDto.getTenantName()); // Removed, now directly from principal in layout
         model.addAttribute("dashboard", dashboardData);
+        model.addAttribute("pageTitle", "Dashboard"); // Set page title for layout
+        model.addAttribute("content", "dashboard/tenant-admin"); // Specify content fragment
 
-        return "dashboard/tenant-admin";
+        return "layout/main"; // Use the master layout
     }
 
     @GetMapping("/system/dashboard")

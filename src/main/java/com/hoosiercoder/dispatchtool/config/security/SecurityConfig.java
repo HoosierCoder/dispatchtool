@@ -21,17 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthenticationSuccessHandler successHandler;
-    private final TenantFilter tenantFilter;
-    private final TenantAuthenticationDetailsSource tenantAuthenticationDetailsSource;
-    // Removed CustomUserDetailsService and PasswordEncoder from constructor injection
-
-    // Adjusted constructor to remove CustomUserDetailsService and PasswordEncoder
-    public SecurityConfig(CustomAuthenticationSuccessHandler successHandler, TenantFilter tenantFilter,
-                          TenantAuthenticationDetailsSource tenantAuthenticationDetailsSource) {
-        this.successHandler = successHandler;
-        this.tenantFilter = tenantFilter;
-        this.tenantAuthenticationDetailsSource = tenantAuthenticationDetailsSource;
+    // Empty constructor, as all dependencies will be injected into @Bean methods
+    public SecurityConfig() {
     }
 
     @Bean
@@ -39,25 +30,25 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Define TenantAuthenticationProvider as a Bean here, accepting its dependencies as method parameters
-    @Bean
-    public TenantAuthenticationProvider tenantAuthenticationProvider(CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) {
-        return new TenantAuthenticationProvider(customUserDetailsService, passwordEncoder);
-    }
+    // Removed the explicit TenantAuthenticationProvider @Bean method.
+    // It will be created directly within the filterChain method.
 
-    // Configure the AuthenticationManager to use our custom provider
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, TenantAuthenticationProvider tenantAuthenticationProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           CustomAuthenticationSuccessHandler successHandler,
+                                           TenantFilter tenantFilter,
+                                           TenantAuthenticationDetailsSource tenantAuthenticationDetailsSource,
+                                           CustomUserDetailsService customUserDetailsService, // Inject CustomUserDetailsService
+                                           PasswordEncoder passwordEncoder) throws Exception { // Inject PasswordEncoder
+        // Build AuthenticationManager here to use our custom provider
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        // Use the already created tenantAuthenticationProvider bean
-        authenticationManagerBuilder.authenticationProvider(tenantAuthenticationProvider);
-        return authenticationManagerBuilder.build();
-    }
+        authenticationManagerBuilder.authenticationProvider(new TenantAuthenticationProvider(customUserDetailsService, passwordEncoder));
+        AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Configure AuthenticationManager
+                .authenticationManager(authenticationManager)
                 // Add the TenantFilter BEFORE the UsernamePasswordAuthenticationFilter
                 .addFilterBefore(tenantFilter, UsernamePasswordAuthenticationFilter.class)
                 // Disable CSRF for API endpoints as they are stateless/Basic Auth

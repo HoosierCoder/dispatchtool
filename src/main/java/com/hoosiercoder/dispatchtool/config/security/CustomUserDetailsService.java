@@ -1,6 +1,8 @@
 package com.hoosiercoder.dispatchtool.config.security;
 
 import com.hoosiercoder.dispatchtool.context.TenantContext;
+import com.hoosiercoder.dispatchtool.tenant.entity.Tenant; // Import Tenant entity
+import com.hoosiercoder.dispatchtool.tenant.repository.TenantRepository; // Import TenantRepository
 import com.hoosiercoder.dispatchtool.user.entity.User;
 import com.hoosiercoder.dispatchtool.user.repository.UserRepository;
 import org.slf4j.Logger;
@@ -25,9 +27,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
     private final UserRepository userRepository;
+    private final TenantRepository tenantRepository; // Inject TenantRepository
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository, TenantRepository tenantRepository) { // Add TenantRepository to constructor
         this.userRepository = userRepository;
+        this.tenantRepository = tenantRepository;
     }
 
     @Override
@@ -79,7 +83,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name())),
                     TenantContext.SYSTEM_TENANT,
                     user.getFirstName(),
-                    user.getLastName()
+                    user.getLastName(),
+                    "System Admin", // Default tenantName for system admin
+                    user.getUserRole() // Pass userRole
             );
         } else {
             // 4. Load as a tenant user using the resolved tenantId
@@ -102,6 +108,15 @@ public class CustomUserDetailsService implements UserDetailsService {
                     return new UsernameNotFoundException("User not found: " + username + " for tenant: " + tenantId);
                 });
 
+        // Fetch tenant details to get the company name
+        Tenant tenant = tenantRepository.findByTenantId(tenantId)
+                .orElseThrow(() -> {
+                    logger.error("Tenant '{}' not found for user '{}'.", tenantId, username);
+                    return new UsernameNotFoundException("Tenant not found for user: " + username);
+                });
+        String tenantName = tenant.getCompanyName();
+
+
         // Set the context for the rest of the request
         TenantContext.setTenantId(tenantId);
 
@@ -119,7 +134,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 Collections.singletonList(authority),
                 tenantId, // Passing the correct tenant ID here
                 user.getFirstName(),
-                user.getLastName()
+                user.getLastName(),
+                tenantName, // Pass the tenantName here
+                user.getUserRole() // Pass userRole
         );
     }
 }

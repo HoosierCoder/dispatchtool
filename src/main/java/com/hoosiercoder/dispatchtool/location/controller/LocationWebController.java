@@ -31,7 +31,9 @@ public class LocationWebController {
         List<LocationDTO> locations = locationService.listLocations();
         model.addAttribute("locations", locations);
         model.addAttribute("tenantId", tenantId); // Pass tenantId to the view for links
-        return "location/list"; // This will map to src/main/resources/templates/location/list.html
+        model.addAttribute("pageTitle", "Locations"); // Set page title for layout
+        model.addAttribute("content", "location/list"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @GetMapping("/new")
@@ -39,7 +41,9 @@ public class LocationWebController {
         model.addAttribute("location", new LocationDTO());
         model.addAttribute("tenantId", tenantId);
         model.addAttribute("isEdit", false); // Flag for form reuse
-        return "location/form"; // This will map to src/main/resources/templates/location/form.html
+        model.addAttribute("pageTitle", "Create Location"); // Set page title for layout
+        model.addAttribute("content", "location/form"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @PostMapping("/new")
@@ -51,7 +55,9 @@ public class LocationWebController {
         if (result.hasErrors()) {
             model.addAttribute("tenantId", tenantId); // Ensure tenantId is available on error
             model.addAttribute("isEdit", false);
-            return "location/form";
+            model.addAttribute("pageTitle", "Create Location"); // Set page title for layout
+            model.addAttribute("content", "location/form"); // Specify content fragment
+            return "layout/main"; // Use the master layout
         }
         locationService.createLocation(locationDto);
         redirectAttributes.addFlashAttribute("message", "Location created successfully!");
@@ -68,7 +74,9 @@ public class LocationWebController {
         model.addAttribute("location", location.get());
         model.addAttribute("tenantId", tenantId);
         model.addAttribute("isEdit", true); // Flag for form reuse
-        return "location/form";
+        model.addAttribute("pageTitle", "Edit Location"); // Set page title for layout
+        model.addAttribute("content", "location/form"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @PostMapping("/{id}/edit")
@@ -80,7 +88,9 @@ public class LocationWebController {
         if (result.hasErrors()) {
             model.addAttribute("tenantId", tenantId); // Ensure tenantId is available on error
             model.addAttribute("isEdit", true);
-            return "location/form";
+            model.addAttribute("pageTitle", "Edit Location"); // Set page title for layout
+            model.addAttribute("content", "location/form"); // Specify content fragment
+            return "layout/main"; // Use the master layout
         }
         try {
             locationService.updateLocation(id, locationDto);

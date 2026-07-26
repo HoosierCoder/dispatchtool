@@ -31,7 +31,9 @@ public class CustomerWebController {
         List<CustomerDTO> customers = customerService.listCustomers();
         model.addAttribute("customers", customers);
         model.addAttribute("tenantId", tenantId); // Pass tenantId to the view for links
-        return "customer/list"; // This will map to src/main/resources/templates/customer/list.html
+        model.addAttribute("pageTitle", "Customers"); // Set page title for layout
+        model.addAttribute("content", "customer/list"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @GetMapping("/new")
@@ -39,7 +41,9 @@ public class CustomerWebController {
         model.addAttribute("customer", new CustomerDTO());
         model.addAttribute("tenantId", tenantId);
         model.addAttribute("isEdit", false); // Flag for form reuse
-        return "customer/form"; // This will map to src/main/resources/templates/customer/form.html
+        model.addAttribute("pageTitle", "Create Customer"); // Set page title for layout
+        model.addAttribute("content", "customer/form"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @PostMapping("/new")
@@ -51,7 +55,9 @@ public class CustomerWebController {
         if (result.hasErrors()) {
             model.addAttribute("tenantId", tenantId); // Ensure tenantId is available on error
             model.addAttribute("isEdit", false);
-            return "customer/form";
+            model.addAttribute("pageTitle", "Create Customer"); // Set page title for layout
+            model.addAttribute("content", "customer/form"); // Specify content fragment
+            return "layout/main"; // Use the master layout
         }
         customerService.createCustomer(customerDto);
         redirectAttributes.addFlashAttribute("message", "Customer created successfully!");
@@ -68,7 +74,9 @@ public class CustomerWebController {
         model.addAttribute("customer", customer.get());
         model.addAttribute("tenantId", tenantId);
         model.addAttribute("isEdit", true); // Flag for form reuse
-        return "customer/form";
+        model.addAttribute("pageTitle", "Edit Customer"); // Set page title for layout
+        model.addAttribute("content", "customer/form"); // Specify content fragment
+        return "layout/main"; // Use the master layout
     }
 
     @PostMapping("/{id}/edit")
@@ -80,7 +88,9 @@ public class CustomerWebController {
         if (result.hasErrors()) {
             model.addAttribute("tenantId", tenantId); // Ensure tenantId is available on error
             model.addAttribute("isEdit", true);
-            return "customer/form";
+            model.addAttribute("pageTitle", "Edit Customer"); // Set page title for layout
+            model.addAttribute("content", "customer/form"); // Specify content fragment
+            return "layout/main"; // Use the master layout
         }
         try {
             customerService.updateCustomer(id, customerDto);
