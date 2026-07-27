@@ -29,19 +29,18 @@ public class TicketServiceImpl implements TicketService{
     private UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final LocationRepository locationRepository;
-
-    @Autowired
-    private ConfigCache configCache;
+    private final ConfigCache configCache; // Made final and removed field @Autowired
 
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository, TicketMapper ticketMapper,
                              UserRepository userRepository, CustomerRepository customerRepository,
-                             LocationRepository locationRepository) {
+                             LocationRepository locationRepository, ConfigCache configCache) { // Added ConfigCache to constructor
         this.ticketMapper = ticketMapper;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.customerRepository = customerRepository;
+        this.configCache = configCache; // Assign configCache
     }
 
     @Override
