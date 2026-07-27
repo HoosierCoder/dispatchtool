@@ -45,6 +45,7 @@ public class UserControllerTest {
         user.setUserId(1L);
         user.setFirstName("John");
         user.setLastName("Doe");
+        user.setUsername("john.doe"); // Added username for consistency
 
         when(userService.listUsers()).thenReturn(List.of(user));
 
@@ -71,12 +72,14 @@ public class UserControllerTest {
     void whenCreateUser_thenReturnCreatedUser() throws Exception {
         // Arrange
         UserDTO inputUser = new UserDTO();
+        inputUser.setUsername("jane.doe"); // Added username to satisfy validation
         inputUser.setFirstName("Jane");
         inputUser.setLastName("Doe");
         inputUser.setUserRole(UserRole.ASSOCIATE);
 
         UserDTO createdUser = new UserDTO();
         createdUser.setUserId(2L);
+        createdUser.setUsername("jane.doe"); // Added username for consistency
         createdUser.setFirstName("Jane");
         createdUser.setLastName("Doe");
         createdUser.setUserRole(UserRole.ASSOCIATE);
