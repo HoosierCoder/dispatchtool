@@ -47,8 +47,8 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.firstName}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.lastName}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.email}"></td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.phone}"></td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.address}"></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.phoneNumber}"></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${customer.billingAddress != null ? customer.billingAddress.streetAddress : ''}"></td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <a th:href="@{|/tenant/${tenantId}/customers/${customer.id}/edit|}"
                        class="text-indigo-600 hover:text-indigo-900 mr-4">Edit</a>
